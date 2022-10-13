@@ -1,7 +1,7 @@
 from gurobipy import GRB, Model
-import pandas as pd
+import pandas as pd # Si sale error, escribir en cmd pip install pandas
 import csv
-import numpy as np
+import numpy as np # Si sale error, escribir en cmd pip install numpy
 
 # m = Model()
 
