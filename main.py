@@ -3,7 +3,7 @@ import pandas as pd # Si sale error, escribir en cmd pip install pandas
 import csv
 import numpy as np # Si sale error, escribir en cmd pip install numpy
 import sys
-from archivos.carga_datos import costo_adicional_camiones, costo_combustible, costo_fijo_almacenamiento, costo_mantencion
+from archivos.carga_datos import costo_adicional_camiones, costo_combustible, costo_fijo_almacenamiento, costo_mantencion, costo_unitario_almacenamiento, costo_vencimiento, stock_inicial
 
 sys.path.append("./archivos")
 
@@ -37,16 +37,18 @@ costo_combustible = costo_combustible()
 costo_fijo_almacenamiento = costo_fijo_almacenamiento()
 costo_mantencion = costo_mantencion()
 costo_ruta = costo_ruta()
-
-
-
-
+costo_unitario_almacenamiento = costo_unitario_almacenamiento()
+costo_vencimiento = costo_vencimiento()
+demanda = demanda()
+distancia_por_pais = distancia_por_pais()
+peso_alimentos = peso_alimentos()
+stock_inicial = stock_inicial()
+sueldo = sueldo()
+volumen_alimentos = volumen_alimentos()
+vencimiento = vencimiento()
 
 # for i in range(3):
 #     print(f"Tipo {tipos[i]} tiene {cantidad_de_alimentos[i]} subalimentos")
-
-
-
 
 T = range(1, 52 + 1) #tiempo
 
