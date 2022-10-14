@@ -41,7 +41,7 @@ costo_unitario_almacenamiento = costo_unitario_almacenamiento()
 costo_vencimiento = costo_vencimiento()
 demanda = demanda()
 distancia_por_pais = distancia_por_pais()
-peso_alimentos = peso_alimentos()
+peso_promedio = peso_promedio()
 stock_inicial = stock_inicial()
 sueldo = sueldo()
 volumen_alimentos = volumen_alimentos()
@@ -51,8 +51,6 @@ vencimiento = vencimiento()
 #     print(f"Tipo {tipos[i]} tiene {cantidad_de_alimentos[i]} subalimentos")
 
 T = range(1, 52 + 1) #tiempo
-
-
 
 # x = m.addVar(vtype=GRB.CONTINUOUS, name="x")
 # y = m.addVar(vtype=GRB.CONTINUOUS, name="y")
