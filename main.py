@@ -1,15 +1,16 @@
-# from gurobipy import GRB, Model
+from gurobipy import GRB, Model
 import pandas as pd # Si sale error, escribir en cmd pip install pandas
 import csv
 import numpy as np # Si sale error, escribir en cmd pip install numpy
 import sys
+from archivos.carga_datos import costo_adicional_camiones, costo_combustible, costo_fijo_almacenamiento, costo_mantencion
 
 sys.path.append("./archivos")
 
 from carga_datos import *
 
-# model = Model()
-# model.setParam("TimeLimit", 3000)
+model = Model()
+model.setParam("TimeLimit", 3000)
 
 paises = ["Chile", "Argentina"]
 tipos = ["Hortofruticola", "Congelado", "Refrigerado"]
@@ -30,9 +31,12 @@ vol_carga = np.array([90,85,85])
 # Se utiliza en algunos camiones este equipo de enfriamiento https://tkadvancer.thermokinginfo.com/upload/whisper-pro/publication/TK80063_Whisper_Pro_Brochure_05-2021_ES_V2.0_spread.pdf
 peso_carga = np.array([31000,31000,31000])
 
-
-
-
+# Importación de datos de csv
+costo_adicional_camiones = costo_adicional_camiones()
+costo_combustible = costo_combustible()
+costo_fijo_almacenamiento = costo_fijo_almacenamiento()
+costo_mantencion = costo_mantencion()
+costo_ruta = costo_ruta()
 
 
 
