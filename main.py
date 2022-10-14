@@ -27,6 +27,10 @@ peso_carga = np.array([31000,31000,31000])
 
 
 
+
+
+
+
 # for i in range(3):
 #     print(f"Tipo {tipos[i]} tiene {cantidad_de_alimentos[i]} subalimentos")
 
