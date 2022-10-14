@@ -226,17 +226,17 @@ def costo_mantencion():
 
 
 # v_a,i [$/camión]
-# Costo de mantención de un camión al conducir por la ruta r
+# Tiempo en semanas de vencimiento del alimento a de tipo i
 
-def costo_mantencion():
-    archivo = open("archivos/costo_mantencion.csv", "r")
+def vencimiento():
+    archivo = open("archivos/vencimiento.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    costo_mantencion = []
+    vencimiento = []
     for i in range(1,len(datos)): # Se salta la primera línea
         linea = datos[i].split("\n")[0].split(",")
         print(linea)
-        costo_mantencion.append(linea)
-    return(costo_mantencion)
+        vencimiento.append(linea)
+    return(vencimiento)
 
-# costo_mantencion()
+# vencimiento()
