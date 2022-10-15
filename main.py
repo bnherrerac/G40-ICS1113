@@ -1,13 +1,9 @@
-from gurobipy import GRB, Model
+from gurobipy import GRB, Model, quicksum
+from gurobipy import *
 import pandas as pd # Si sale error, escribir en cmd pip install pandas
 import csv
 import numpy as np # Si sale error, escribir en cmd pip install numpy
-import sys
-from archivos.carga_datos import costo_adicional_camiones, costo_combustible, costo_fijo_almacenamiento, costo_mantencion, costo_unitario_almacenamiento, costo_vencimiento, stock_inicial
-
-sys.path.append("./archivos")
-
-from carga_datos import *
+from archivos.carga_datos import *
 
 model = Model()
 model.setParam("TimeLimit", 3000)
@@ -29,6 +25,7 @@ vol_carga = np.array([90,85,85])
 # Camiones frigoríficos: 85 m3, 31000 kg https://www.dsv.com/es-es/nuestras-soluciones/modos-de-transporte/transporte-por-carretera/medidas-camion-trailer/trailer-frigorifico-o-camion-frigo
 # Camiones para congelados: 85 m3, 31000 kg (mismo que arriba) http://www.frigocargo.cl/#project
 # Se utiliza en algunos camiones este equipo de enfriamiento https://tkadvancer.thermokinginfo.com/upload/whisper-pro/publication/TK80063_Whisper_Pro_Brochure_05-2021_ES_V2.0_spread.pdf
+
 peso_carga = np.array([31000,31000,31000])
 
 # Importación de datos de csv
@@ -52,9 +49,12 @@ vencimiento = vencimiento()
 
 T = range(1, 52 + 1) #tiempo
 
-# x = m.addVar(vtype=GRB.CONTINUOUS, name="x")
-# y = m.addVar(vtype=GRB.CONTINUOUS, name="y")
-# z = m.addVar(vtype=GRB.CONTINUOUS, name="z")
+#Variables
+Tr = model.addVars(a, i, j, k, t, vtype=GRB.CONTINUOUS, name="Tr")
+Cam = model.addVars(i, j, k, t, vtype=GRB.CONTINUOUS, name="Cam")
+Al = model.addVars(a, i, k, t, tau, vtype=GRB.CONTINUOUS, name="Al")
+ExT = model.addVars(tau, a, i, k, t*, vtype=GRB.CONTINUOUS, name="ExT")
+
 
 # m.update()
 
