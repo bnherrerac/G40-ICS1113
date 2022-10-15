@@ -131,9 +131,9 @@ model.addConstr((quicksum(quicksum(ExT[tau,t,a,i,k] for tau in list(np.array(Tau
 model.addConstr((ExT[tau,t,a,i,k] <= Al[tau,a,i,k,t] for a in A for i in I for k in K for tau in list(np.array(Tau)[np.array(Tau)<t])), name="R7")
 model.addConstr((Al[tau,a,i,k,t] > ExT[tau,t,a,i,k] for a in A for i in I for k in K for t in T), name="R8") 
 model.addConstr((Cam[i,j,k,t] >= quicksum(((Tr[a,i,j,k,t]*V_ai)/V_m) for a in A) for i in I for t in T for j in J for k in K), name="R9")
-model.addConstr((quicksum(Al[tau,a,i,k,1] for tau in list(np.array(Tau)[np.array(Tau)<t]))== q_ai[a,i]-d_ai[1,a,i] for i in I for a in A for j in J), name="R10")
-#model.addConstr((quicksum(Al[tau,a,i,k,t] for tau in list(np.array(Tau)[np.array(Tau)<t])) == (quicksum(Al[tau,a,i,k,t] for tau in (list(np.array(Tau)[np.array(Tau)<t])-1)) - Tr[a,i,j,k,t-1]-d_ai[t,a,i]) for i in I for a in A for t in for t in range(2,53) for j in J), name="R11")
-
+model.addConstr((quicksum(Al[tau,a,i,k,1] for tau in list(np.array(Tau)[np.array(Tau)<t]))== q_ai[a,i]-d_ai[1,a,i] for i in I for a in A for k in K for j in J), name="R10")
+#model.addConstr((quicksum(Al[tau,a,i,k,t] for tau in list(np.array(Tau)[np.array(Tau)<t])) == (quicksum(Al[tau,a,i,k,t] for tau in (list(np.array(Tau)[np.array(Tau)<t])-1)) - Tr[a,i,j,k,t-1]-d_ai[t,a,i]) for i in I for a in A for k in K for t in range(2,53) for j in J), name="R11")
+#a la R11 le falta poner que la suma vaya desde tau=o a tau= tau-1
 #------------------------- Función objetivo -------------------------#
 
 obj = quicksum( 
