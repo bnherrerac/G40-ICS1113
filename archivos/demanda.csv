@@ -1,32 +1,31 @@
 ﻿Tipo,Alimento,cantidaddemandada
-Hortofruticola,Arroz,2
-Hortofruticola,Harina,1
-Congelado,Vacuno,1
-Congelado,Pollo,1
-Congelado,Cerdo,1
-Refrigerado,Pescado,1
-Refrigerado,Leche,1
-Refrigerado,Yogurt,1
-Refrigerado,Huevo,1
-Hortofruticola,Aceite,1
-Hortofruticola,Limon,1
-Hortofruticola,Naranja,1
-Hortofruticola,Manzana,1
-Hortofruticola,Platano,1
-Hortofruticola,Tomate,1
-Hortofruticola,Lechuga,1
-Hortofruticola,Repollo,1
-Hortofruticola,Zapallo,1
-Hortofruticola,Pimenton,1
-Hortofruticola,Porotos,1
-Hortofruticola,Lentejas,1
-Hortofruticola,Ajo,1
-Hortofruticola,Papas,1
-Hortofruticola,Cebolla,1
-Hortofruticola,Zanahoria,1
-Hortofruticola,Azucar,1
-Hortofruticola,Cafe,1
-Hortofruticola,Te,1
-Hortofruticola,Sal,1
-Refrigerado,Bebida,1
-Refrigerado,Vino,1
+Congelado,Asiento
+Congelado,Carne molida
+Congelado,Chuleta de cerdo centro o vetada
+Congelado,Choclo congelado
+Congelado,Pulpa de cerdo
+Congelado,Carne de pavo molida
+Congelado,Pechuga de pollo
+Congelado,Pollo entero
+Congelado,Trutro de pollo
+Congelado,Salchicha y vienesa de ave
+Refrigerado,Jamón de cerdo
+Refrigerado,Pate
+Refrigerado,Yogurt
+Refrigerado,Queso Gouda
+Refrigerado,Quesillo y queso fresco con sal 
+Refrigerado,Queso crema
+Refrigerado,Margarina
+Refrigerado,Agua mineral
+Refrigerado,Bebida gaseosa tradicional
+Refrigerado,Jugo liquido
+Hortofruticola,Plátano 
+Hortofruticola,Manzana 
+Hortofruticola,Lechuga
+Hortofruticola,Zapallo
+Hortofruticola,Limon
+Hortofruticola,Tomate
+Hortofruticola,Cebolla nueva
+Hortofruticola,Papa de guarda
+Hortofruticola,Zanahoria
+Hortofruticola,Palta
