@@ -1,12 +1,4 @@
 ﻿Tipo,Alimento 
-Hortofrutícola,Arroz
-Hortofrutícola,Espiral
-Hortofrutícola,Galleta dulce
-Hortofrutícola,Galleta no dulce 
-Hortofrutícola,Torta 15 o 20 personas
-Hortofrutícola,Prepizza familiar
-Hortofrutícola,Harina de trigo
-Hortofrutícola,Avena
 Congelado,Asiento
 Congelado,Carne molida
 Congelado,Chuleta de cerdo centro o vetada
@@ -18,49 +10,33 @@ Congelado,Pollo entero
 Congelado,Trutro de pollo
 Refrigerado,Pulpa de cordero fresco o refrigerado
 Congelado,Salchicha y vienesa de ave
-Congelado,Salchicha y vienesa tradicional
 Congelado,Longaniza
 Refrigerado,Jamón de cerdo
 Refrigerado,Pate
-Hortofrutícola,Surtido en conserva
-Hortofrutícola,Leche líquida entera
-Hortofrutícola,Leche en polvo entera instantánea
+Hortofruticola,Leche liquida entera
 Refrigerado,Yogurt
 Refrigerado,Queso Gouda
 Refrigerado,Quesillo y queso fresco con sal 
 Refrigerado,Queso crema
-Hortofrutícola,Huevo de gallina
 Congelado,Mantequilla con sal
 Refrigerado,Margarina
-Hortofrutícola,Aceite vegetal combinado o puro 
-Hortofrutícola,Plátano 
-Hortofrutícola,Manzana 
-Hortofrutícola,Maní salado
-Hortofrutícola,Poroto
-Hortofrutícola,Lenteja
-Hortofrutícola,Lechuga
-Hortofrutícola,Zapallo
-Hortofrutícola,Limón
-Hortofrutícola,Palta
-Hortofrutícola,Tomate
-Hortofrutícola,Zanahoria
-Hortofrutícola,Cebolla nueva
+Hortofruticola,Aceite vegetal combinado o puro 
+Hortofruticola,Plátano 
+Hortofruticola,Manzana 
+Hortofruticola,Lechuga
+Hortofruticola,Zapallo
+Hortofruticola,Limon
+Hortofruticola,Tomate
+Hortofruticola,Cebolla nueva
 Congelado,Choclo congelado
-Hortofrutícola,Papa de guarda
-Hortofrutícola,Azúcar
-Hortofrutícola,Chocolate
-Refrigerado,Caramelo
-Congelado,Helado familiar un sabor
-Hortofrutícola,Salsa de tomate
-Hortofrutícola,Sucedáneo de café
-Hortofrutícola,Te para preparar
+Hortofruticola,Papa de guarda
+Hortofruticola,Azucar
+Hortofruticola,Salsa de tomate
 Refrigerado,Agua mineral
 Refrigerado,Bebida gaseosa tradicional
-Refrigerado,Bebida energizante
-Refrigerado,Refresco isotónico
-Refrigerado,Jugo líquido
-Refrigerado,Néctar líquido
-Hortofrutícola,Refresco en polvo 
-Hortofrutícola,Completo
-Congelado,Papas fritas
+Refrigerado,Refresco isotonico
+Refrigerado,Jugo liquido
+Refrigerado,Néctar liquido
+Hortofruticola,Completo
+
 
