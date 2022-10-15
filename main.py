@@ -16,19 +16,19 @@ rutas = ["Norte", "Centro", "Sur"]
 #------------------------- Importación de datos de csv -------------------------#
 alimentos, cant_por_tipo, total_alimentos = alimentos(tipos)
 costo_adicional_camiones = costo_adicional_camiones()
-# costo_combustible = costo_combustible()
+costo_combustible = costo_combustible()
 costo_fijo_almacenamiento = costo_fijo_almacenamiento()
 costo_mantencion = costo_mantencion()
 costo_ruta = costo_ruta()
 costo_unitario_almacenamiento = costo_unitario_almacenamiento()
 costo_vencimiento = costo_vencimiento(tipos)
 demanda = demanda(tipos)
-distancia_por_pais = distancia_por_pais()
-# peso_promedio = peso_promedio(tipos)
+distancia_por_pais = distancia_por_pais(rutas)
+peso_promedio = peso_promedio(tipos)
 stock_inicial = stock_inicial(tipos)
 sueldo = sueldo()
 volumen_promedio = volumen_promedio(tipos)
-vencimiento = vencimiento()
+vencimiento = vencimiento(tipos)
 volumen_bodegas = volumen_bodegas()
 
 #------------------------------- Rangos -------------------------------#
@@ -36,12 +36,13 @@ cant_de_centros = 8
 cant_de_bodegas = 9
 
 T = range(1, 52 + 1)    #tiempo
-tau = range(1, 52 + 1)  #tiempo de llegada
+Tau = range(1, 52 + 1)  #tiempo de llegada
 I = range(1, len(cant_por_tipo) + 1) # Tipos de alimentos 1: Hortofrutícola 2:Congelado 3:Refrigerado
 A = range(1, cant_por_tipo[0] + 1) # Alimentos de cada tipo
 J = range(1, cant_de_centros + 1) # Cantidad de centros de distribución
 K = range(1, cant_de_bodegas + 1) # Cantidad de bodegas de almacenamiento
-
+R = range(1, len(rutas) + 1) # 1:Norte, 2:Centro, 3:Sur
+P = range(1, len(paises) + 1) # 1:Chile, 2:Argentina
 
 #------------------------- Parámetros -------------------------#
 # IMPORTANTE: el conjunto I está indexado como 1:Hortofrutícola 2:Congelado 3:Refrigerado
@@ -51,7 +52,10 @@ dict_tipos = dict(zip(I, tipos))
 dict_alimentos = {}
 for i in I:
     dict_alimentos[i] = dict(zip(A,alimentos[dict_tipos[i]]))
-print("dict_alimentos = ", dict_alimentos)
+# print("dict_alimentos = ", dict_alimentos)
+
+dict_rutas = {1:"Norte", 2:"Centro", 3:"Sur"}
+dict_paises = {1:"Chile", 2:"Argentina"}
 
 # dict_alimentos = {
 # 1: {1: 'Manzana', 2: 'Pera', 3: 'Naranja'}, 
@@ -69,54 +73,84 @@ V_m = 90 # 90 m3 es lo más común en camiones de transporte de alimentos, ver f
 P_m = 31000 # 31000 kg es lo más común en camiones de transporte de alimentos, ver fuentes de abajo. 
 
 
-CFB_i = {(i): costo_fijo_almacenamiento[dict_tipos[i]] for i in I}
+CFB_i = {(i): int(costo_fijo_almacenamiento[dict_tipos[i]]) for i in I}
 # print(CFB_i)
-VB_i = {(i): volumen_bodegas[dict_tipos[i]] for i in I}
+VB_i = {(i): int(volumen_bodegas[dict_tipos[i]]) for i in I}
 # print(VB_i)
-CTr_i = {(i): costo_adicional_camiones[dict_tipos[i]] for i in I}
+CTr_i = {(i): int(costo_adicional_camiones[dict_tipos[i]]) for i in I}
 # print(CTr_i)
-CAl_i = {(i): costo_unitario_almacenamiento[dict_tipos[i]] for i in I}
+CAl_i = {(i): int(costo_unitario_almacenamiento[dict_tipos[i]]) for i in I}
 # print(CAl_i)
-q_ai = {(a,i): stock_inicial[dict_tipos[i]][dict_alimentos[i][a]] for i in I for a in A}
+q_ai = {(a,i): int(stock_inicial[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 # print(q_ai)
-# d_ai = {(a,i): demanda[dict_tipos[i]][dict_alimentos[i][a]] for i in I for a in A}
+d_ai = {(a,i): int(demanda[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 # print(d_ai)
 
-P_ai = {(a,i): peso_promedio[dict_tipos[i]][dict_alimentos[i][a]] for i in I for a in A}
-V_ai = {(a,i): volumen_promedio[dict_tipos[i]][dict_alimentos[i][a]] for i in I for a in A}
-H_ai = {(a,i): costo_vencimiento[dict_tipos[i]][dict_alimentos[i][a]] for i in I for a in A}
-d_rp = {}
-### Los datos aquí abajo están inventados
+P_ai = {(a,i): int(peso_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
+V_ai = {(a,i): int(volumen_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
+H_ai = {(a,i): int(costo_vencimiento[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
+l_rp = {(r,p): int(distancia_por_pais[dict_rutas[r]][dict_paises[p]]) for r in R for p in P}
+PC_p = {(p): int(costo_combustible[dict_paises[p]]) for p in P}
+PT_r = {(r): int(costo_ruta[dict_rutas[r]]) for r in R}
+S_r = {(r): int(sueldo[dict_rutas[r]]) for r in R}
+M_r = {(r): int(costo_mantencion[dict_rutas[r]]) for r in R}
+v_ai = {(a,i): int(vencimiento[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
+
+v_taitau = {}
+for t in T:
+    for tau in Tau:
+        for a in A:
+            for i in I:
+                if t-tau>= v_ai[(a,i)]:
+                    v_taitau[(tau,t,a,i)] = 0
+                else:
+                    v_taitau[(tau,t,a,i)] = 1
 
 
-vol_carga = np.array([90,85,85]) 
+### Fuentes de los datos
 # Camiones terrestres (pequeños): 90 m3, 12000 kg https://www.avantiatransportes.com/capacidad-de-carga-transporte-terrestre/ 
 # Camiones trailer box (más grandes): 90 m3, 31400 kg https://www.dsv.com/es-es/nuestras-soluciones/modos-de-transporte/transporte-por-carretera/medidas-camion-trailer/camion-trailer-box-o-camion-furgon
 # Camiones frigoríficos: 85 m3, 31000 kg https://www.dsv.com/es-es/nuestras-soluciones/modos-de-transporte/transporte-por-carretera/medidas-camion-trailer/trailer-frigorifico-o-camion-frigo
 # Camiones para congelados: 85 m3, 31000 kg (mismo que arriba) http://www.frigocargo.cl/#project
 # Se utiliza en algunos camiones este equipo de enfriamiento https://tkadvancer.thermokinginfo.com/upload/whisper-pro/publication/TK80063_Whisper_Pro_Brochure_05-2021_ES_V2.0_spread.pdf
 
-peso_carga = np.array([31000,31000,31000])
-
-
-#Variables
+#------------------------- Variables -------------------------#
 Tr = model.addVars(A, I, J, K, T, vtype=GRB.CONTINUOUS, name="Tr")
 Cam = model.addVars(I, J, K, T, vtype=GRB.CONTINUOUS, name="Cam")
-Al = model.addVars(A, I, K, T, tau, vtype=GRB.CONTINUOUS, name="Al")
-ExT = model.addVars(T, A, I, K, tau, vtype=GRB.CONTINUOUS, name="ExT")
+Al = model.addVars(Tau, A, I, K, T, vtype=GRB.CONTINUOUS, name="Al")
+ExT = model.addVars(T, A, I, K, Tau, vtype=GRB.CONTINUOUS, name="ExT")
 
+#------------------------- Restricciones -------------------------#
 
-# m.update()
+#------------------------- Función objetivo -------------------------#
 
-# m.setObjective(x + z, GRB.MAXIMIZE)
+obj = quicksum( 
+        quicksum(
+            quicksum(
+                quicksum((PT_r[i]+S_r[i]+quicksum(l_rp[(i,p)*PC_p[p]] for p in P) + M_r[i] + CTr_i[i])*Cam[i,j,k,t] 
+                for k in K)
+            for j in J)
+        for i in I)
+    for t in T)
 
-# m.addConstr(x + y + z <= 5, name="R1")
-# m.addConstr(x - z >= -3, name="R2")
-# m.addConstr(x - y - z <= 1, name="R3")
-# m.addConstr(x >= 0, name="R4")
-# m.addConstr(y >= 0, name="R5")
-# m.addConstr(z >= 0, name="R6")
+obj +=  quicksum(
+            quicksum(
+                CFB_i[i] + quicksum(quicksum(CAl_i[i]*V_ai[(a,i)]*(quicksum(Al[tau,a,i,k,t]-d_ai[(a,i)] for tau in list(np.array(Tau)[np.array(Tau)<t]))) for k in K) for a in A)
+            for k in K)
+        for j in J)
 
-# m.optimize()
+obj += quicksum( 
+        quicksum(
+            quicksum(
+                quicksum(
+                    H_ai[(a,i)]*quicksum((1-v_taitau[(tau,t,a,i)])*Al[tau,a,i,k,t] for tau in list(np.array(Tau)[np.array(Tau)<t]))
+                for k in K)
+            for j in J)
+        for i in I)
+    for t in T)
 
-# m.printAttr("X")
+model.setObjective(obj)
+model.optimize()
+valor_objetivo = model.ObjVal
+
+# Guardado de resultados

@@ -18,16 +18,16 @@ def alimentos(tipos):
             if linea[0] == tipo:
                 alimentos[tipo].append(linea[1])
 
-    print(alimentos)
+    # print(alimentos)
 
     #Cantidad de alimentos en cada tipo
     cant_por_tipo = []
     for tipo in tipos:
         cant_por_tipo.append(len(alimentos.get(tipo)))
-    print(cant_por_tipo)
+    # print(cant_por_tipo)
 
     total = sum(cant_por_tipo)
-    print(total)
+    # print(total)
     return alimentos, cant_por_tipo, total
 
 # alimentos(tipos)
@@ -46,7 +46,7 @@ def costo_fijo_almacenamiento():
         # print(linea)
         # costo_fijo_almacenamiento.append(linea)
         costo_fijo_almacenamiento[linea[0]] = linea[1]
-    print(costo_fijo_almacenamiento)
+    # print(costo_fijo_almacenamiento)
     return(costo_fijo_almacenamiento)
 
 # tipos = ["Hortofruticola", "Congelado", "Refrigerado"]
@@ -66,7 +66,7 @@ def volumen_bodegas():
         # print(linea)
         # volumen_bodegas.append(linea)
         volumen_bodegas[linea[0]] = linea[1]
-    print(volumen_bodegas)
+    # print(volumen_bodegas)
     return(volumen_bodegas)
 
 # volumen_bodegas()
@@ -85,7 +85,7 @@ def costo_adicional_camiones():
         # print(linea)
         # costo_adicional_camiones.append(linea)
         costo_adicional_camiones[linea[0]] = linea[1]
-    print(costo_adicional_camiones)
+    # print(costo_adicional_camiones)
     return(costo_adicional_camiones)
 
 # costo_adicional_camiones()
@@ -104,7 +104,7 @@ def costo_unitario_almacenamiento():
         # print(linea)
         # costo_unitario_almacenamiento.append(linea)
         costo_unitario_almacenamiento[linea[0]] = linea[1]
-    print(costo_unitario_almacenamiento)
+    # print(costo_unitario_almacenamiento)
     return(costo_unitario_almacenamiento)
 
 # costo_unitario_almacenamiento()
@@ -133,7 +133,7 @@ def stock_inicial(tipos):
     for tipo in tipos:
         lista = stock_inicial[tipo]
         stock_inicial[tipo] = {k:v for elem in lista for k,v in elem.items()}
-    print(stock_inicial)
+    # print(stock_inicial)
     return(stock_inicial)
 
 # stock_inicial(tipos)    
@@ -161,7 +161,7 @@ def demanda(tipos):
     for tipo in tipos:
         lista = demanda[tipo]
         demanda[tipo] = {k:v for elem in lista for k,v in elem.items()}
-    print(demanda)
+    # print(demanda)
     return(demanda)
 
 demanda(tipos)    
@@ -189,7 +189,7 @@ def peso_promedio(tipos):
     for tipo in tipos:
         lista = peso_promedio[tipo]
         peso_promedio[tipo] = {k:v for elem in lista for k,v in elem.items()}
-    print(peso_promedio)
+    # print(peso_promedio)
     return(peso_promedio)
 
 # peso_promedio(tipos)
@@ -216,7 +216,7 @@ def volumen_promedio(tipos):
     for tipo in tipos:
         lista = volumen_promedio[tipo]
         volumen_promedio[tipo] = {k:v for elem in lista for k,v in elem.items()}
-    print(volumen_promedio)
+    # print(volumen_promedio)
     return(volumen_promedio)
 
 # volumen_promedio(tipos)
@@ -243,7 +243,7 @@ def costo_vencimiento(tipos):
     for tipo in tipos:
         lista = costo_vencimiento[tipo]
         costo_vencimiento[tipo] = {k:v for elem in lista for k,v in elem.items()}
-    print(costo_vencimiento)
+    # print(costo_vencimiento)
     return(costo_vencimiento)
 
 # costo_vencimiento(tipos)
@@ -271,10 +271,10 @@ def distancia_por_pais(rutas):
     for ruta in rutas:
         lista = distancia_por_pais[ruta]
         distancia_por_pais[ruta] = {k:v for elem in lista for k,v in elem.items()}
-    print(distancia_por_pais)
+    # print(distancia_por_pais)
     return(distancia_por_pais)
 
-# distancia_por_pais()
+# distancia_por_pais(rutas)
 
 
 # PC_p [$/km]
@@ -290,7 +290,7 @@ def costo_combustible():
         # print(linea)
         # costo_combustible.append(linea)
         costo_combustible[linea[0]] = linea[1]
-    print(costo_combustible)
+    # print(costo_combustible)
     return(costo_combustible)
 
 
@@ -310,7 +310,7 @@ def costo_ruta():
         # print(linea)
         # costo_ruta.append(linea)
         costo_ruta[linea[0]] = linea[1]
-    print(costo_ruta)
+    # print(costo_ruta)
     return(costo_ruta)
 
 
@@ -331,7 +331,7 @@ def sueldo():
         # print(linea)
         # sueldo.append(linea)
         sueldo[linea[0]] = linea[1]
-    print(sueldo)
+    # print(sueldo)
     return(sueldo)
 
 # sueldo()
@@ -350,7 +350,7 @@ def costo_mantencion():
         # print(linea)
         # costo_mantencion.append(linea)
         costo_mantencion[linea[0]] = linea[1]
-    print(costo_mantencion)
+    # print(costo_mantencion)
     return(costo_mantencion)
 
 # costo_mantencion()
@@ -359,18 +359,27 @@ def costo_mantencion():
 # v_a,i [$/camión]
 # Tiempo en semanas de vencimiento del alimento a de tipo i
 
-def vencimiento():
+def vencimiento(tipos):
     archivo = open("archivos/vencimiento.csv", "r")
     datos = archivo.readlines()
     archivo.close()
     vencimiento = {}
+    
+    for tipo in tipos:
+        vencimiento[tipo] = []
+
     for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
         # print(linea)
-        # vencimiento.append(linea)
-        vencimiento[linea[0]] = linea[1]
-    print(vencimiento)
+        for tipo in tipos:
+            if linea[0] == tipo:
+                vencimiento[tipo].append({linea[1]:linea[2]})
+
+    for tipo in tipos:
+        lista = vencimiento[tipo]
+        vencimiento[tipo] = {k:v for elem in lista for k,v in elem.items()}
+    print("Vencimiento =", vencimiento)
     return(vencimiento)
 
 
-# vencimiento()
+vencimiento(tipos)

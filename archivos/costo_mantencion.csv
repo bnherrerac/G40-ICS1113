@@ -1,5 +1,4 @@
-Tipo,Km,Costo($)
-aceite,20000,300000
-Tipo,Kg,Costo($)
-neumaticos,100000,2200000
-general,1,57
+Ruta,Costo
+Norte,120000
+Centro,100000
+Sur,140000

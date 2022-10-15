@@ -1,1 +1,10 @@
-﻿
+﻿Tipo,Alimento,Vencimientoensemanas
+Hortofruticola,Manzana,4
+Hortofruticola,Pera,3
+Hortofruticola,Naranja,2
+Refrigerado,Queso,4
+Refrigerado,Yogur,5
+Refrigerado,Jamon,7
+Congelado,Pollo,11
+Congelado,Camaron,11
+Congelado,Hamburguesa,14
