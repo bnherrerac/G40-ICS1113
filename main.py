@@ -13,10 +13,6 @@ tipos = ["Hortofruticola", "Congelado", "Refrigerado"]
 regiones = ["Norte", "Centro", "Sur"]
 
 ### Los datos aquí abajo están inventados
-alimentos = np.arange(3)
-cantidad_de_alimentos = np.array([5,4,7])
-centros_de_distribucion = np.array([3,2,5])
-bodegas = np.array([2,4,6])
 
 flota_de_camiones = np.array([15,7,12])
 vol_carga = np.array([90,85,85]) 
@@ -29,6 +25,7 @@ vol_carga = np.array([90,85,85])
 peso_carga = np.array([31000,31000,31000])
 
 # Importación de datos de csv
+alimentos, cant_por_tipo, total_alimentos = alimentos(tipos)
 costo_adicional_camiones = costo_adicional_camiones()
 costo_combustible = costo_combustible()
 costo_fijo_almacenamiento = costo_fijo_almacenamiento()
@@ -44,16 +41,22 @@ sueldo = sueldo()
 volumen_alimentos = volumen_alimentos()
 vencimiento = vencimiento()
 
-# for i in range(3):
-#     print(f"Tipo {tipos[i]} tiene {cantidad_de_alimentos[i]} subalimentos")
+cant_de_centros = 8
+cant_de_bodegas = 9
 
-T = range(1, 52 + 1) #tiempo
+T = range(1, 52 + 1)    #tiempo
+tau = range(1, 52 + 1)  #tiempo de llegada
+I = range(1, len(cant_por_tipo) + 1) # Tipos de alimentos
+A = range(1, cant_por_tipo[0] + 1) # Alimentos de cada tipo
+J = range(1, cant_de_centros + 1) # Cantidad de centros de distribución
+K = range(1, cant_de_bodegas + 1) # Cantidad de bodegas de almacenamiento
+
 
 #Variables
-Tr = model.addVars(a, i, j, k, t, vtype=GRB.CONTINUOUS, name="Tr")
-Cam = model.addVars(i, j, k, t, vtype=GRB.CONTINUOUS, name="Cam")
-Al = model.addVars(a, i, k, t, tau, vtype=GRB.CONTINUOUS, name="Al")
-ExT = model.addVars(tau, a, i, k, t*, vtype=GRB.CONTINUOUS, name="ExT")
+Tr = model.addVars(A, J, K, T, vtype=GRB.CONTINUOUS, name="Tr")
+Cam = model.addVars(I, J, K, T, vtype=GRB.CONTINUOUS, name="Cam")
+Al = model.addVars(A, K, T, tau, vtype=GRB.CONTINUOUS, name="Al")
+ExT = model.addVars(tau, A, K, T, vtype=GRB.CONTINUOUS, name="ExT")
 
 
 # m.update()

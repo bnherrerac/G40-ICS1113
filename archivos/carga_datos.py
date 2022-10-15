@@ -1,3 +1,35 @@
+tipos = ["Hortofruticola", "Congelado", "Refrigerado"]
+def alimentos(tipos):
+    archivo = open("archivos/alimentos.csv", "r")
+    datos = archivo.readlines()
+    archivo.close()
+    alimentos = {}
+
+    for tipo in tipos:
+        alimentos[tipo] = []
+
+    for i in range(1,len(datos)):
+        linea = datos[i].split("\n")[0].split(",")
+        # print(linea)
+        for tipo in tipos:
+            if linea[0] == tipo:
+                alimentos[tipo].append(linea[1])
+
+    print(alimentos)
+
+    #Cantidad de alimentos en cada tipo
+    cant_por_tipo = []
+    for tipo in tipos:
+        cant_por_tipo.append(len(alimentos.get(tipo)))
+    print(cant_por_tipo)
+
+    total = sum(cant_por_tipo)
+    print(total)
+    return alimentos, cant_por_tipo, total
+
+alimentos(tipos)
+
+
 # CFB_i [CLP/semana]
 # Costo fijo de almacenamiento de alimentos de tipo i (el total de una bodega)
 
