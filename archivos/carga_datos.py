@@ -1,4 +1,7 @@
 tipos = ["Hortofruticola", "Congelado", "Refrigerado"]
+rutas = ["Norte", "Centro", "Sur"]
+paises = ["Chile", "Argentina"]
+
 def alimentos(tipos):
     archivo = open("archivos/alimentos.csv", "r")
     datos = archivo.readlines()
@@ -27,7 +30,7 @@ def alimentos(tipos):
     print(total)
     return alimentos, cant_por_tipo, total
 
-alimentos(tipos)
+# alimentos(tipos)
 
 
 # CFB_i [CLP/semana]
@@ -37,12 +40,13 @@ def costo_fijo_almacenamiento():
     archivo = open("archivos/costo_fijo_almacenamiento.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    costo_fijo_almacenamiento = []
+    costo_fijo_almacenamiento = {}
     for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        costo_fijo_almacenamiento.append(linea)
-
+        # print(linea)
+        # costo_fijo_almacenamiento.append(linea)
+        costo_fijo_almacenamiento[linea[0]] = linea[1]
+    print(costo_fijo_almacenamiento)
     return(costo_fijo_almacenamiento)
 
 # tipos = ["Hortofruticola", "Congelado", "Refrigerado"]
@@ -56,15 +60,16 @@ def volumen_bodegas():
     archivo = open("archivos/volumen_bodegas.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    volumen_bodegas = []
+    volumen_bodegas = {}
     for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        volumen_bodegas.append(linea)
-
+        # print(linea)
+        # volumen_bodegas.append(linea)
+        volumen_bodegas[linea[0]] = linea[1]
+    print(volumen_bodegas)
     return(volumen_bodegas)
 
-#volumen_bodegas()
+# volumen_bodegas()
 
 
 # CTR_i [CLP/camión*semana]
@@ -74,12 +79,13 @@ def costo_adicional_camiones():
     archivo = open("archivos/costo_adicional_camiones.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    costo_adicional_camiones = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    costo_adicional_camiones = {}
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        costo_adicional_camiones.append(linea)
-
+        # print(linea)
+        # costo_adicional_camiones.append(linea)
+        costo_adicional_camiones[linea[0]] = linea[1]
+    print(costo_adicional_camiones)
     return(costo_adicional_camiones)
 
 # costo_adicional_camiones()
@@ -92,11 +98,13 @@ def costo_unitario_almacenamiento():
     archivo = open("archivos/costo_unitario_almacenamiento.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    costo_unitario_almacenamiento = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    costo_unitario_almacenamiento = {}
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        costo_unitario_almacenamiento.append(linea)
+        # print(linea)
+        # costo_unitario_almacenamiento.append(linea)
+        costo_unitario_almacenamiento[linea[0]] = linea[1]
+    print(costo_unitario_almacenamiento)
     return(costo_unitario_almacenamiento)
 
 # costo_unitario_almacenamiento()
@@ -106,83 +114,164 @@ def costo_unitario_almacenamiento():
 # Cantidad de unidades iniciales de alimento a de tipo i para satisfacer 
 # la demanda inicial.
 
-def stock_inicial():
+def stock_inicial(tipos):
     archivo = open("archivos/stock_inicial.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    stock_inicial = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    stock_inicial = {}
+    
+    for tipo in tipos:
+        stock_inicial[tipo] = []
+
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        stock_inicial.append(linea)
+        # print(linea)
+        for tipo in tipos:
+            if linea[0] == tipo:
+                stock_inicial[tipo].append({linea[1]:linea[2]})
+
+    for tipo in tipos:
+        lista = stock_inicial[tipo]
+        stock_inicial[tipo] = {k:v for elem in lista for k,v in elem.items()}
+    print(stock_inicial)
     return(stock_inicial)
 
-# stock_inicial()    
+# stock_inicial(tipos)    
 
 
 # d_t;a,i [unidades/semana]
 # Demanda del alimento a del tipo i en el tiempo t
 
-def demanda():
+def demanda(tipos):
     archivo = open("archivos/demanda.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    demanda = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    demanda = {}
+    
+    for tipo in tipos:
+        demanda[tipo] = []
+
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        demanda.append(linea)
+        # print(linea)
+        for tipo in tipos:
+            if linea[0] == tipo:
+                demanda[tipo].append({linea[1]:linea[2]})
+
+    for tipo in tipos:
+        lista = demanda[tipo]
+        demanda[tipo] = {k:v for elem in lista for k,v in elem.items()}
+    print(demanda)
     return(demanda)
 
-# demanda()
+demanda(tipos)    
 
 
 # P_a,i [kg/unidad]
 # Peso promedio de unidad de alimento a de tipo i
 
-def peso_promedio():
+def peso_promedio(tipos):
     archivo = open("archivos/peso_promedio.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    peso_promedio = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    peso_promedio = {}
+    
+    for tipo in tipos:
+        peso_promedio[tipo] = []
+
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        peso_promedio.append(linea)
+        # print(linea)
+        for tipo in tipos:
+            if linea[0] == tipo:
+                peso_promedio[tipo].append({linea[1]:linea[2]})
+
+    for tipo in tipos:
+        lista = peso_promedio[tipo]
+        peso_promedio[tipo] = {k:v for elem in lista for k,v in elem.items()}
+    print(peso_promedio)
     return(peso_promedio)
 
-# peso_promedio()
+# peso_promedio(tipos)
 
+# V_a,i [m^3/unidad]
+# Volumen promedio de una unidad de alimento a de la categoría i
+
+def volumen_promedio(tipos):
+    archivo = open("archivos/volumen_promedio.csv", "r")
+    datos = archivo.readlines()
+    archivo.close()
+    volumen_promedio = {}
+    
+    for tipo in tipos:
+        volumen_promedio[tipo] = []
+
+    for i in range(1,len(datos)):
+        linea = datos[i].split("\n")[0].split(",")
+        # print(linea)
+        for tipo in tipos:
+            if linea[0] == tipo:
+                volumen_promedio[tipo].append({linea[1]:linea[2]})
+
+    for tipo in tipos:
+        lista = volumen_promedio[tipo]
+        volumen_promedio[tipo] = {k:v for elem in lista for k,v in elem.items()}
+    print(volumen_promedio)
+    return(volumen_promedio)
+
+# volumen_promedio(tipos)
 
 # H_a,i [$/unidad]
 # Costo asociado a desechar unidad de alimento a de tipo i
 
-def costo_vencimiento():
+def costo_vencimiento(tipos):
     archivo = open("archivos/costo_vencimiento.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    costo_vencimiento = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    costo_vencimiento = {}
+    
+    for tipo in tipos:
+        costo_vencimiento[tipo] = []
+
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        costo_vencimiento.append(linea)
+        # print(linea)
+        for tipo in tipos:
+            if linea[0] == tipo:
+                costo_vencimiento[tipo].append({linea[1]:linea[2]})
+
+    for tipo in tipos:
+        lista = costo_vencimiento[tipo]
+        costo_vencimiento[tipo] = {k:v for elem in lista for k,v in elem.items()}
+    print(costo_vencimiento)
     return(costo_vencimiento)
 
-# costo_vencimiento()
+# costo_vencimiento(tipos)
 
 
 # l_r,p [km]
 # Distancia total que recorre un camión en el país p en la ruta r
 
-def distancia_por_pais():
+def distancia_por_pais(rutas):
     archivo = open("archivos/distancia_por_pais.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    distancia_por_pais = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    distancia_por_pais = {}
+    
+    for ruta in rutas:
+        distancia_por_pais[ruta] = []
+
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        distancia_por_pais.append(linea)
+        # print(linea)
+        for ruta in rutas:
+            if linea[0] == ruta:
+                distancia_por_pais[ruta].append({linea[1]:linea[2]})
+
+    for ruta in rutas:
+        lista = distancia_por_pais[ruta]
+        distancia_por_pais[ruta] = {k:v for elem in lista for k,v in elem.items()}
+    print(distancia_por_pais)
     return(distancia_por_pais)
 
 # distancia_por_pais()
@@ -195,12 +284,15 @@ def costo_combustible():
     archivo = open("archivos/costo_combustible.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    costo_combustible = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    costo_combustible = {}
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        costo_combustible.append(linea)
+        # print(linea)
+        # costo_combustible.append(linea)
+        costo_combustible[linea[0]] = linea[1]
+    print(costo_combustible)
     return(costo_combustible)
+
 
 # costo_combustible()
 
@@ -212,12 +304,15 @@ def costo_ruta():
     archivo = open("archivos/costo_ruta.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    costo_ruta = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    costo_ruta = {}
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        costo_ruta.append(linea)
+        # print(linea)
+        # costo_ruta.append(linea)
+        costo_ruta[linea[0]] = linea[1]
+    print(costo_ruta)
     return(costo_ruta)
+
 
 # costo_ruta()
 
@@ -230,11 +325,13 @@ def sueldo():
     archivo = open("archivos/sueldo.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    sueldo = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    sueldo = {}
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        sueldo.append(linea)
+        # print(linea)
+        # sueldo.append(linea)
+        sueldo[linea[0]] = linea[1]
+    print(sueldo)
     return(sueldo)
 
 # sueldo()
@@ -247,11 +344,13 @@ def costo_mantencion():
     archivo = open("archivos/costo_mantencion.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    costo_mantencion = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    costo_mantencion = {}
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        costo_mantencion.append(linea)
+        # print(linea)
+        # costo_mantencion.append(linea)
+        costo_mantencion[linea[0]] = linea[1]
+    print(costo_mantencion)
     return(costo_mantencion)
 
 # costo_mantencion()
@@ -264,11 +363,14 @@ def vencimiento():
     archivo = open("archivos/vencimiento.csv", "r")
     datos = archivo.readlines()
     archivo.close()
-    vencimiento = []
-    for i in range(1,len(datos)): # Se salta la primera línea
+    vencimiento = {}
+    for i in range(1,len(datos)):
         linea = datos[i].split("\n")[0].split(",")
-        print(linea)
-        vencimiento.append(linea)
+        # print(linea)
+        # vencimiento.append(linea)
+        vencimiento[linea[0]] = linea[1]
+    print(vencimiento)
     return(vencimiento)
+
 
 # vencimiento()

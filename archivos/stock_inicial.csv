@@ -1,1 +1,10 @@
-﻿
+﻿Tipo,Alimento,Stockinicial
+Hortofruticola,Manzana,500
+Hortofruticola,Pera,125
+Hortofruticola,Naranja,100
+Refrigerado,Queso,350
+Refrigerado,Yogur,1500
+Refrigerado,Jamon,800
+Congelado,Pollo,290
+Congelado,Camaron,100
+Congelado,Hamburguesa,1000
