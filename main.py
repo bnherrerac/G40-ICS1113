@@ -122,6 +122,18 @@ ExT = model.addVars(T, A, I, K, Tau, vtype=GRB.CONTINUOUS, name="ExT")
 
 #------------------------- Restricciones -------------------------#
 
+model.addConstr((Cam[i,j,k,t] <= N_i for i in I for j in J for k in K for t in T), name="R2")
+model.addConstr((Tr[a,i,j,k,t] <= P_m for a in A for i in I for j in J for k in K for t in T), name="R3.1")
+model.addConstr((Tr[a,i,j,k,t] <= V_m for a in A for i in I for j in J for k in K for t in T), name="R3.2")
+model.addConstr((quicksum(Al[tau,a,i,k,t] for tau in list(np.array(Tau)[np.array(Tau)<t])) <= VB_i for a in A for i in I for k in K for tau in list(np.array(Tau)[np.array(Tau)<t]) for t in T), name="R4")
+model.addConstr((Al[tau,a,i,k,t] >= d_ai[a,i] for a in A for i in I for k in K for tau in list(np.array(Tau)[np.array(Tau)<t])), name="R5")
+model.addConstr((quicksum(quicksum(ExT[tau,t,a,i,k] for tau in list(np.array(Tau)[np.array(Tau)<t])) for k in K) <= d_ai[a,i] for a in A for i in I for t in T), name="R6")
+model.addConstr((ExT[tau,t,a,i,k] <= Al[tau,a,i,k,t] for a in A for i in I for k in K for tau in list(np.array(Tau)[np.array(Tau)<t])), name="R7")
+model.addConstr((Al[tau,a,i,k,t] > ExT[tau,t,a,i,k] for a in A for i in I for k in K for t in T), name="R8") 
+model.addConstr((Cam[i,j,k,t] >= quicksum(((Tr[a,i,j,k,t]*V_ai)/V_m) for a in A) for i in I for t in T for j in J for k in K), name="R9")
+model.addConstr((quicksum(Al[tau,a,i,k,1] for tau in list(np.array(Tau)[np.array(Tau)<t]))== q_ai[a,i]-d_ai[1,a,i] for i in I for a in A for j in J), name="R10")
+#model.addConstr((quicksum(Al[tau,a,i,k,t] for tau in list(np.array(Tau)[np.array(Tau)<t])) == (quicksum(Al[tau,a,i,k,t] for tau in (list(np.array(Tau)[np.array(Tau)<t])-1)) - Tr[a,i,j,k,t-1]-d_ai[t,a,i]) for i in I for a in A for t in for t in range(2,53) for j in J), name="R11")
+
 #------------------------- Función objetivo -------------------------#
 
 obj = quicksum( 
