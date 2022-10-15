@@ -69,8 +69,8 @@ N_i = {(i): flota_de_camiones[j] for (i,j) in zip(I,range(len(I)))}
 
 R_i = {"1": "Norte", "2": "Centro", "3": "Sur"}
 
-V_m = 90 # 90 m3 es lo más común en camiones de transporte de alimentos, ver fuentes de abajo. 
-P_m = 31000 # 31000 kg es lo más común en camiones de transporte de alimentos, ver fuentes de abajo. 
+V_i = 90 # 90 m3 es lo más común en camiones de transporte de alimentos, ver fuentes de abajo. 
+P_i = 31000 # 31000 kg es lo más común en camiones de transporte de alimentos, ver fuentes de abajo. 
 
 
 CFB_i = {(i): int(costo_fijo_almacenamiento[dict_tipos[i]]) for i in I}
