@@ -48,14 +48,13 @@ P = range(1, len(paises) + 1) # 1:Chile, 2:Argentina
 # IMPORTANTE: el conjunto I está indexado como 1:Hortofrutícola 2:Congelado 3:Refrigerado
 dict_tipos = dict(zip(I, tipos))
 # dict_tipos =  {1: 'Hortofruticola', 2: 'Congelado', 3: 'Refrigerado'}
-
+dict_rutas = {1:"Norte", 2:"Centro", 3:"Sur"}
+dict_paises = {1:"Chile", 2:"Argentina"}
 dict_alimentos = {}
 for i in I:
     dict_alimentos[i] = dict(zip(A,alimentos[dict_tipos[i]]))
 # print("dict_alimentos = ", dict_alimentos)
 
-dict_rutas = {1:"Norte", 2:"Centro", 3:"Sur"}
-dict_paises = {1:"Chile", 2:"Argentina"}
 
 # dict_alimentos = {
 # 1: {1: 'Manzana', 2: 'Pera', 3: 'Naranja'}, 
@@ -132,8 +131,8 @@ model.addConstr((ExT[tau,t,a,i,k] <= Al[tau,a,i,k,t] for a in A for i in I for k
 model.addConstr((Al[tau,a,i,k,t] > ExT[tau,t,a,i,k] for a in A for i in I for k in K for t in T), name="R8") 
 model.addConstr((Cam[i,j,k,t] >= quicksum(((Tr[a,i,j,k,t]*V_ai)/V_m) for a in A) for i in I for t in T for j in J for k in K), name="R9")
 model.addConstr((quicksum(Al[tau,a,i,k,1] for tau in list(np.array(Tau)[np.array(Tau)<t]))== q_ai[a,i]-d_ai[1,a,i] for i in I for a in A for k in K for j in J), name="R10")
-#model.addConstr((quicksum(Al[tau,a,i,k,t] for tau in list(np.array(Tau)[np.array(Tau)<t])) == (quicksum(Al[tau,a,i,k,t] for tau in (list(np.array(Tau)[np.array(Tau)<t])-1)) - Tr[a,i,j,k,t-1]-d_ai[t,a,i]) for i in I for a in A for k in K for t in range(2,53) for j in J), name="R11")
-#a la R11 le falta poner que la suma vaya desde tau=o a tau= tau-1
+model.addConstr((quicksum(Al[tau,a,i,k,t] for tau in list(np.array(Tau)[np.array(Tau)<t])) == (quicksum(Al[tau,a,i,k,t] for tau in (list(np.array(Tau)[np.array(Tau)<t-1]))) - Tr[a,i,j,k,t-1]-d_ai[t,a,i]) for i in I for a in A for k in K for t in T[2:] for j in J), name="R11")
+
 #------------------------- Función objetivo -------------------------#
 
 obj = quicksum( 
