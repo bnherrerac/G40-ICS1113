@@ -2,25 +2,23 @@
 Congelado,Asiento
 Congelado,Carne molida
 Congelado,Chuleta de cerdo centro o vetada
-Congelado,Costillar de cerdo 
+Congelado,Choclo congelado
 Congelado,Pulpa de cerdo
 Congelado,Carne de pavo molida
 Congelado,Pechuga de pollo
 Congelado,Pollo entero
 Congelado,Trutro de pollo
-Refrigerado,Pulpa de cordero fresco o refrigerado
 Congelado,Salchicha y vienesa de ave
-Congelado,Longaniza
 Refrigerado,Jamón de cerdo
 Refrigerado,Pate
-Hortofruticola,Leche liquida entera
 Refrigerado,Yogurt
 Refrigerado,Queso Gouda
 Refrigerado,Quesillo y queso fresco con sal 
 Refrigerado,Queso crema
-Congelado,Mantequilla con sal
 Refrigerado,Margarina
-Hortofruticola,Aceite vegetal combinado o puro 
+Refrigerado,Agua mineral
+Refrigerado,Bebida gaseosa tradicional
+Refrigerado,Jugo liquido
 Hortofruticola,Plátano 
 Hortofruticola,Manzana 
 Hortofruticola,Lechuga
@@ -28,15 +26,6 @@ Hortofruticola,Zapallo
 Hortofruticola,Limon
 Hortofruticola,Tomate
 Hortofruticola,Cebolla nueva
-Congelado,Choclo congelado
 Hortofruticola,Papa de guarda
-Hortofruticola,Azucar
-Hortofruticola,Salsa de tomate
-Refrigerado,Agua mineral
-Refrigerado,Bebida gaseosa tradicional
-Refrigerado,Refresco isotonico
-Refrigerado,Jugo liquido
-Refrigerado,Nectar liquido
-Hortofruticola,Completo
-
-
+Hortofruticola,Zanahoria
+Hortofruticola,Palta
