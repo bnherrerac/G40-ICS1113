@@ -1,4 +1,6 @@
 ﻿Tipo,Alimento 
+Congelado,Asiento
+Congelado,Carne de pavo molida
 Congelado,Carne molida
 Congelado,Chuleta de cerdo centro o vetada
 Congelado,Choclo congelado
@@ -12,19 +14,18 @@ Refrigerado,Pate
 Refrigerado,Yogurt
 Refrigerado,Queso Gouda
 Refrigerado,Quesillo y queso fresco con sal
-Refrigerado,Queso crema
 Refrigerado,Margarina
+Refrigerado,Lechuga
+Refrigerado,Bebida gaseosa tradicional
+Refrigerado,Jugo liquido
+Refrigerado,Nectar liquido
 Hortofruticola,Aceite vegetal combinado o puro 
 Hortofruticola,Plátano
 Hortofruticola,Manzana
-Refrigerado,Lechuga
 Hortofrutícola,Zapallo
 Hortofruticola,Limon
 Hortofruticola,Tomate
 Hortofruticola,Cebolla nueva
 Hortofruticola,Papa de guarda
-Refrigerado,Bebida gaseosa tradicional
-Refrigerado,Jugo liquido
-Refrigerado,Nectar liquido
-Hortofruticola,Palta
-
+Hortofrutícola,Zanahoria
+Hortofrutícola,Palta
