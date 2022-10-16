@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿Tipo,Alimento,cantidaddemandada;;;;
 Congelado,Asiento,276;;;;
 Congelado,Carne molida,4514;;;;
@@ -29,3 +30,34 @@ Hortofruticola,Cebolla nueva,16120;;;;
 Hortofruticola,Papa de guarda,111919;;;;
 Hortofruticola,Zanahoria,5803;;;;
 Hortofruticola,Palta,11514;;;;
+=======
+﻿Tipo,Alimento,cantidaddemandada
+Congelado,Carne molida,
+Congelado,Chuleta de cerdo centro o vetada
+Congelado,Choclo congelado
+Congelado,Pulpa de cerdo
+Congelado,Pechuga de pollo
+Congelado,Pollo entero
+Congelado,Trutro de pollo
+Congelado,Salchicha y vienesa de ave
+Refrigerado,Jamón de cerdo
+Refrigerado,Pate
+Refrigerado,Yogurt
+Refrigerado,Queso Gouda
+Refrigerado,Quesillo y queso fresco con sal
+Refrigerado,Queso crema
+Refrigerado,Margarina
+Hortofruticola,Aceite vegetal combinado o puro 
+Hortofruticola,Plátano
+Hortofruticola,Manzana
+Refrigerado,Lechuga
+Hortofrutícola,Zapallo
+Hortofruticola,Limon
+Hortofruticola,Tomate
+Hortofruticola,Cebolla nueva
+Hortofruticola,Papa de guarda
+Refrigerado,Bebida gaseosa tradicional
+Refrigerado,Jugo liquido
+Refrigerado,Nectar liquido
+Hortofruticola,Palta
+>>>>>>> 9315443b83a647a523417729285617dede2d5e44
