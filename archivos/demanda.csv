@@ -1,29 +1,31 @@
-﻿Tipo,Alimento,cantidaddemandada
-Congelado,Carne molida,
-Congelado,Chuleta de cerdo centro o vetada
-Congelado,Choclo congelado
-Congelado,Pulpa de cerdo
-Congelado,Pechuga de pollo
-Congelado,Pollo entero
-Congelado,Trutro de pollo
-Congelado,Salchicha y vienesa de ave
-Refrigerado,Jamón de cerdo
-Refrigerado,Pate
-Refrigerado,Yogurt
-Refrigerado,Queso Gouda
-Refrigerado,Quesillo y queso fresco con sal
-Refrigerado,Queso crema
-Refrigerado,Margarina
-Hortofruticola,Aceite vegetal combinado o puro 
-Hortofruticola,Plátano
-Hortofruticola,Manzana
-Refrigerado,Lechuga
-Hortofrutícola,Zapallo
-Hortofruticola,Limon
-Hortofruticola,Tomate
-Hortofruticola,Cebolla nueva
-Hortofruticola,Papa de guarda
-Refrigerado,Bebida gaseosa tradicional
-Refrigerado,Jugo liquido
-Refrigerado,Nectar liquido
-Hortofruticola,Palta
+Tipo,Alimento,cantidaddemandada
+Congelado,Asiento,276
+Congelado,Carne molida,4514
+Congelado,Chuleta de cerdo centro o vetada,3592
+Congelado,Choclo congelado,5251
+Congelado,Pulpa de cerdo,3685
+Congelado,Carne de pavo molida,1105
+Congelado,Pechuga de pollo,4329
+Congelado,Pollo entero,18791
+Congelado,Trutro de pollo,14094
+Congelado,Salchicha y vienesa de ave,2119
+Refrigerado,Jam�n de cerdo,8659
+Refrigerado,Pate,2671
+Refrigerado,Yogurt,19160
+Refrigerado,Queso Gouda,3961
+Refrigerado,Quesillo y queso fresco con sal,829
+Refrigerado,Queso crema,276
+Refrigerado,Margarina,3316
+Refrigerado,Agua mineral,9
+Refrigerado,Bebida gaseosa tradicional,43
+Refrigerado,Jugo liquido,4
+Hortofruticola,Pl�tano,101510
+Hortofruticola,Manzana,47070
+Hortofruticola,Lechuga,23213
+Hortofruticola,Zapallo,13080
+Hortofruticola,Limon,14462
+Hortofruticola,Tomate,41083
+Hortofruticola,Cebolla nueva,16120
+Hortofruticola,Papa de guarda,111919
+Hortofruticola,Zanahoria,5803
+Hortofruticola,Palta,11514
