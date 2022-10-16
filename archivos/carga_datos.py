@@ -180,7 +180,7 @@ def peso_promedio(tipos):
         peso_promedio[tipo] = []
 
     for i in range(1,len(datos)):
-        linea = datos[i].split("\n")[0].split(",")
+        linea = datos[i].split("\n")[0].split(";")
         # print(linea)
         for tipo in tipos:
             if linea[0] == tipo:
