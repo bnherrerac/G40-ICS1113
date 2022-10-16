@@ -148,8 +148,51 @@ obj += quicksum(
         for i in I)
     for t in T)
 
-model.setObjective(obj)
+#------------------------- Minimización de costos -------------------------#
+
+model.setObjective(obj, GRB.MINIMIZE)
 model.optimize()
 valor_objetivo = model.ObjVal
+print(f"El costo minimizado es de {valor_objetivo} CLP durante todo el año.")
+
+#------------------------- Escritura de datos en resultados -------------------------#
+
+sol_Tr = ""
+sol_Cam = ""
+sol_Al = ""
+sol_ExT = ""
+
+for t in T:
+    for i in I:
+        for a in A:
+            for j in J:
+                for k in K:
+                    sol_Tr += f" \n{int(Tr[a,i,j,k,t].x)},{a},{i},{j},{k},{t}"
+            for k in K:
+                for tau in Tau:
+                    sol_Al += f" \n{int(Al[tau,a,i,k,t].x)},{tau},{a},{i},{k},{t}"
+        for k in K:
+            for j in J:
+                sol_Cam += f" \n{int(Cam[i,j,k,t].x)},{i},{j},{k},{t}"    
+            for  t in T:
+                for tau in Tau:
+                    sol_ExT += f" \n{int(ExT[tau,t,a,i,k].x)},{tau},{t},{a},{i},{k}"
+
+with open("resultados/resultados_Tr.csv", "w") as file:
+    file.write("Tr,a,i,j,k,t")
+    file.write("sol_Tr")
+
+with open("resultados/resultados_Cam.csv", "w") as file:
+    file.write("Cam,i,j,k,t")
+    file.write("sol_Cam")
+
+with open("resultados/resultados_Al.csv", "w") as file:
+    file.write("Al,tau,a,i,k,t")
+    file.write("sol_Al")
+
+with open("resultados/resultados_ExT.csv", "w") as file:
+    file.write("ExT,tau,t,a,i,k")
+    file.write("sol_ExT")
+
 
 # Guardado de resultados
