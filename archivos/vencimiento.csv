@@ -1,33 +1,31 @@
 ﻿Tipo,Alimento,Vencimientoensemanas
+Congelado,Asiento,
+Congelado,Carne de pavo molida
 Congelado,Carne molida,17
 Congelado,Chuleta de cerdo centro o vetada,52
-Congelado,Costillar de cerdo,52 
+Congelado,Choclo congelado,34
 Congelado,Pulpa de cerdo,52
 Congelado,Pechuga de pollo,39
 Congelado,Pollo entero,52
 Congelado,Trutro de pollo,39
 Congelado,Salchicha y vienesa de ave,8
-Congelado,Longaniza,8
 Refrigerado,Jamón de cerdo,8
 Refrigerado,Pate,8
-Hortofruticola,Leche liquida entera,13
 Refrigerado,Yogurt,2
 Refrigerado,Queso Gouda,3
 Refrigerado,Quesillo y queso fresco con sal,2 
-Refrigerado,Queso crema,2
-Congelado,Mantequilla con sal,39
 Refrigerado,Margarina,36
-Hortofruticola,Aceite vegetal combinado o puro,52 
-Hortofruticola,Plátano,1 
-Hortofruticola,Manzana,3 
 Refrigerado,Lechuga,2
-Hortofrutícola,Zapallo,13
-Hortofruticola,Limon,3
-Hortofruticola,Tomate,1
-Hortofruticola,Cebolla nueva,4
-Congelado,Choclo congelado,34
-Hortofruticola,Papa de guarda,8
 Refrigerado,Bebida gaseosa tradicional,39
 Refrigerado,Jugo liquido,3
 Refrigerado,Nectar liquido,78
+Hortofruticola,Aceite vegetal combinado o puro,52 
+Hortofruticola,Plátano,1 
+Hortofruticola,Manzana,3 
+Hortofruticola,Zapallo,13
+Hortofruticola,Limon,3
+Hortofruticola,Tomate,1
+Hortofruticola,Cebolla nueva,4
+Hortofruticola,Papa de guarda,8
+Hortofruticola,Zanahoria
 Hortofruticola,Palta,1
