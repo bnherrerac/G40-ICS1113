@@ -1,6 +1,6 @@
 ﻿Nomenclatura:Tipo,Alimento,Pesopromedio
-Congelado;Asiento;
-Congelado;Carne de pavo molida;
+Congelado;Asiento;1
+Congelado;Carne de pavo molida;1
 Congelado;Carne molida;0.5
 Congelado;Chuleta de cerdo centro o vetada;0.9
 Congelado;Choclo congelado;0.5
@@ -27,6 +27,6 @@ Hortofruticola;Limon;1
 Hortofruticola;Tomate;0.25
 Hortofruticola;Cebolla nueva;1
 Hortofruticola;Papa de guarda;2
-Hortofruticola;Zanahoria;
+Hortofruticola;Zanahoria;0.3
 Hortofruticola;Palta;0.3
 
