@@ -1,6 +1,6 @@
 ﻿Tipo,Alimento,Vencimientoensemanas
-Congelado,Asiento,
-Congelado,Carne de pavo molida
+Congelado,Asiento,12
+Congelado,Carne de pavo molida,12
 Congelado,Carne molida,17
 Congelado,Chuleta de cerdo centro o vetada,52
 Congelado,Choclo congelado,34
@@ -27,5 +27,5 @@ Hortofruticola,Limon,3
 Hortofruticola,Tomate,1
 Hortofruticola,Cebolla nueva,4
 Hortofruticola,Papa de guarda,8
-Hortofruticola,Zanahoria
+Hortofruticola,Zanahoria,2
 Hortofruticola,Palta,1
