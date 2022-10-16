@@ -1,30 +1,30 @@
 ﻿Tipo,Alimento,Costodevencimiento
-Congelado,Asiento
-Congelado,Carne de pavo molida
-Congelado,Carne molida,440.5
-Congelado,Chuleta de cerdo centro o vetada,368.9
-Congelado,Choclo congelado,297.3
-Congelado,Pulpa de cerdo,343.4
-Congelado,Pechuga de pollo,356.1
-Congelado,Pollo entero,958.1
-Congelado,Trutro de pollo,882.3
-Congelado,Salchicha y vienesa de ave,138.4
-Refrigerado,Jamón de cerdo,787.4
-Refrigerado,Pate,243.2
-Refrigerado,Yogurt,692.5
-Refrigerado,Queso Gouda,621.4
-Refrigerado,Quesillo y queso fresco con sal,103.4
+Congelado,Asiento,63
+Congelado,Carne de pavo molida,121
+Congelado,Carne molida,441
+Congelado,Chuleta de cerdo centro o vetada,369
+Congelado,Choclo congelado,297
+Congelado,Pulpa de cerdo,343
+Congelado,Pechuga de pollo,356
+Congelado,Pollo entero,958
+Congelado,Trutro de pollo,882
+Congelado,Salchicha y vienesa de ave,138
+Refrigerado,Jamón de cerdo,787
+Refrigerado,Pate,243
+Refrigerado,Yogurt,693
+Refrigerado,Queso Gouda,621
+Refrigerado,Quesillo y queso fresco con sal,103
 Refrigerado,Margarina,239
-Refrigerado,Lechuga,554.2
-Refrigerado,Bebida gaseosa tradicional,881.9
-Refrigerado,Jugo liquido,167.2
-Refrigerado,Nectar liquido,
-Hortofruticola,Plátano,1368.7
-Hortofruticola,Manzana,776.3
-Hortofruticola,Zapallo,274.6
+Refrigerado,Lechuga,554
+Refrigerado,Bebida gaseosa tradicional,882
+Refrigerado,Jugo liquido,167
+Refrigerado,Nectar liquido,2.2
+Hortofruticola,Plátano,1369
+Hortofruticola,Manzana,776
+Hortofruticola,Zapallo,275
 Hortofruticola,Limon,218
-Hortofruticola,Tomate,812.7
-Hortofruticola,Cebolla nueva,265.4
-Hortofruticola,Papa de guarda,1110.8
-Hortofruticola,Zanahoria
-Hortofruticola,Palta,497.3
+Hortofruticola,Tomate,813
+Hortofruticola,Cebolla nueva,265
+Hortofruticola,Papa de guarda,1111
+Hortofruticola,Zanahoria,204
+Hortofruticola,Palta,497
