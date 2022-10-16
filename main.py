@@ -27,7 +27,7 @@ distancia_por_pais = distancia_por_pais(rutas)
 peso_promedio = peso_promedio(tipos)
 stock_inicial = stock_inicial(tipos)
 sueldo = sueldo()
-volumen_promedio = volumen_promedio(tipos)
+# volumen_promedio = volumen_promedio(tipos)
 vencimiento = vencimiento(tipos)
 volumen_bodegas = volumen_bodegas()
 
@@ -60,7 +60,7 @@ for i in I:
 # 3: {1: 'Queso', 2: 'Yogur', 3: 'Jamon'}
 # }
 
-flota_de_camiones = np.array([15,7,12])
+flota_de_camiones = np.array([30,30,30])
 N_i = {(i): flota_de_camiones[j] for (i,j) in zip(I,range(len(I)))}
 R_i = {"1": "Norte", "2": "Centro", "3": "Sur"}
 
@@ -69,13 +69,13 @@ P_m = 31000 # 31000 kg es lo más común en camiones de transporte de alimentos,
 
 
 CFB_i = {(i): int(costo_fijo_almacenamiento[dict_tipos[i]]) for i in I}
-VB_i = {(i): int(volumen_bodegas[dict_tipos[i]]) for i in I}
+# VB_i = {(i): int(volumen_bodegas[dict_tipos[i]]) for i in I}
 CTr_i = {(i): int(costo_adicional_camiones[dict_tipos[i]]) for i in I}
 CAl_i = {(i): float(costo_unitario_almacenamiento[dict_tipos[i]]) for i in I}
 q_ai = {(a,i): int(stock_inicial[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 d_ai = {(a,i): int(demanda[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 P_ai = {(a,i): float(peso_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
-V_ai = {(a,i): float(volumen_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
+# V_ai = {(a,i): float(volumen_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 H_ai = {(a,i): float(costo_vencimiento[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 l_rp = {(r,p): int(distancia_por_pais[dict_rutas[r]][dict_paises[p]]) for r in R for p in P}
 PC_p = {(p): int(costo_combustible[dict_paises[p]]) for p in P}
@@ -108,25 +108,35 @@ Al = model.addVars(Tau, A, I, K, T, vtype=GRB.CONTINUOUS, name="Al")
 ExT = model.addVars(T, A, I, K, Tau, vtype=GRB.CONTINUOUS, name="ExT")
 
 #------------------------- Restricciones -------------------------#
+print("Agregando restricciones")
+model.addConstrs((Cam[i,j,k,t] <= N_i[i] for i in I for j in J for k in K for t in T), name="R2")
+model.addConstrs((Tr[a,i,j,k,t]*P_ai[(a,i)] <= P_m for a in A for i in I for j in J for k in K for t in T), name="R3.1")
+# model.addConstr((Tr[a,i,j,k,t]*V_ai[(a,i)] <= V_m for a in A for i in I for j in J for k in K for t in T), name="R3.2")
+cont = 0
+for t in T:
+    print(f"Agregando restricciones acumulativas para t = {t}")
+    name_5 = "R5_" + str(cont)
+    model.addConstrs((Al[tau,a,i,k,t] >= d_ai[a,i] for a in A for i in I for k in K for tau in list(np.array(Tau)[np.array(Tau)<t])), name=name_5)
+    name_6 = "R6_" + str(cont)
+    model.addConstrs((quicksum(quicksum(ExT[t,a,i,k,tau] for tau in list(np.array(Tau)[np.array(Tau)<t])) for k in K) <= d_ai[a,i] for a in A for i in I), name=name_6)
+    name_7 = "R7_" + str(cont)
+    model.addConstrs((ExT[t,a,i,k,tau] <= Al[tau,a,i,k,t] for a in A for i in I for k in K for tau in list(np.array(Tau)[np.array(Tau)<t])), name=name_7)
+    name_10 = "R10_" + str(cont)
+    model.addConstrs((quicksum(Al[tau,a,i,k,1] for tau in list(np.array(Tau)[np.array(Tau)<t]))== q_ai[a,i]-d_ai[a,i] for i in I for a in A for k in K for j in J), name=name_10)
+    name_11 = "R11_" + str(cont) 
+    if t>=2:
+        model.addConstrs((quicksum(Al[tau,a,i,k,t] for tau in list(np.array(Tau)[np.array(Tau)<t])) == (quicksum(Al[tau,a,i,k,t] for tau in (list(np.array(Tau)[np.array(Tau)<t-1]))) - Tr[a,i,j,k,t-1]-d_ai[a,i]) for i in I for a in A for k in K for j in J), name=name_11)
+    cont += 1
 
-model.addConstr((Cam[i,j,k,t] <= N_i for i in I for j in J for k in K for t in T), name="R2")
-model.addConstr((Tr[a,i,j,k,t] <= P_m for a in A for i in I for j in J for k in K for t in T), name="R3.1")
-model.addConstr((Tr[a,i,j,k,t] <= V_m for a in A for i in I for j in J for k in K for t in T), name="R3.2")
-model.addConstr((quicksum(Al[tau,a,i,k,t] for tau in list(np.array(Tau)[np.array(Tau)<t])) <= VB_i for a in A for i in I for k in K for tau in list(np.array(Tau)[np.array(Tau)<t]) for t in T), name="R4")
-model.addConstr((Al[tau,a,i,k,t] >= d_ai[a,i] for a in A for i in I for k in K for tau in list(np.array(Tau)[np.array(Tau)<t])), name="R5")
-model.addConstr((quicksum(quicksum(ExT[tau,t,a,i,k] for tau in list(np.array(Tau)[np.array(Tau)<t])) for k in K) <= d_ai[a,i] for a in A for i in I for t in T), name="R6")
-model.addConstr((ExT[tau,t,a,i,k] <= Al[tau,a,i,k,t] for a in A for i in I for k in K for tau in list(np.array(Tau)[np.array(Tau)<t])), name="R7")
-model.addConstr((Al[tau,a,i,k,t] > ExT[tau,t,a,i,k] for a in A for i in I for k in K for t in T), name="R8") 
-model.addConstr((Cam[i,j,k,t] >= quicksum(((Tr[a,i,j,k,t]*V_ai)/V_m) for a in A) for i in I for t in T for j in J for k in K), name="R9")
-model.addConstr((quicksum(Al[tau,a,i,k,1] for tau in list(np.array(Tau)[np.array(Tau)<t]))== q_ai[a,i]-d_ai[1,a,i] for i in I for a in A for k in K for j in J), name="R10")
-model.addConstr((quicksum(Al[tau,a,i,k,t] for tau in list(np.array(Tau)[np.array(Tau)<t])) == (quicksum(Al[tau,a,i,k,t] for tau in (list(np.array(Tau)[np.array(Tau)<t-1]))) - Tr[a,i,j,k,t-1]-d_ai[t,a,i]) for i in I for a in A for k in K for t in T[2:] for j in J), name="R11")
+model.addConstrs((Al[tau,a,i,k,t] >= ExT[t,a,i,k,tau] for a in A for i in I for k in K for t in T), name="R8") 
+# model.addConstr((Cam[i,j,k,t] >= quicksum(((Tr[a,i,j,k,t]*V_ai)/V_m) for a in A) for i in I for t in T for j in J for k in K), name="R9")
 
 #------------------------- Función objetivo -------------------------#
 
 obj = quicksum( 
         quicksum(
             quicksum(
-                quicksum((PT_r[i]+S_r[i]+quicksum(l_rp[(i,p)*PC_p[p]] for p in P) + M_r[i] + CTr_i[i])*Cam[i,j,k,t] 
+                quicksum((PT_r[i]+S_r[i]+quicksum(l_rp[(i,p)]*PC_p[p] for p in P) + M_r[i] + CTr_i[i])*Cam[i,j,k,t] 
                 for k in K)
             for j in J)
         for i in I)
@@ -134,7 +144,7 @@ obj = quicksum(
 
 obj +=  quicksum(
             quicksum(
-                CFB_i[i] + quicksum(quicksum(CAl_i[i]*V_ai[(a,i)]*(quicksum(Al[tau,a,i,k,t]-d_ai[(a,i)] for tau in list(np.array(Tau)[np.array(Tau)<t]))) for k in K) for a in A)
+                CFB_i[i] + quicksum(quicksum(CAl_i[i]*P_ai[(a,i)]*(quicksum(Al[tau,a,i,k,t]-d_ai[(a,i)] for tau in list(np.array(Tau)[np.array(Tau)<t]))) for k in K) for a in A)
             for k in K)
         for j in J)
 
@@ -152,47 +162,48 @@ obj += quicksum(
 
 model.setObjective(obj, GRB.MINIMIZE)
 model.optimize()
-valor_objetivo = model.ObjVal
-print(f"El costo minimizado es de {valor_objetivo} CLP durante todo el año.")
+model.computeIIS()
+# valor_objetivo = model.ObjNVal
+# print(f"El costo minimizado es de {valor_objetivo} CLP durante todo el año.")
 
 #------------------------- Escritura de datos en resultados -------------------------#
 
-sol_Tr = ""
-sol_Cam = ""
-sol_Al = ""
-sol_ExT = ""
+# sol_Tr = ""
+# sol_Cam = ""
+# sol_Al = ""
+# sol_ExT = ""
 
-for t in T:
-    for i in I:
-        for a in A:
-            for j in J:
-                for k in K:
-                    sol_Tr += f" \n{int(Tr[a,i,j,k,t].x)},{a},{i},{j},{k},{t}"
-            for k in K:
-                for tau in Tau:
-                    sol_Al += f" \n{int(Al[tau,a,i,k,t].x)},{tau},{a},{i},{k},{t}"
-        for k in K:
-            for j in J:
-                sol_Cam += f" \n{int(Cam[i,j,k,t].x)},{i},{j},{k},{t}"    
-            for  t in T:
-                for tau in Tau:
-                    sol_ExT += f" \n{int(ExT[tau,t,a,i,k].x)},{tau},{t},{a},{i},{k}"
+# for t in T:
+#     for i in I:
+#         for a in A:
+#             for j in J:
+#                 for k in K:
+#                     sol_Tr += f" \n{int(Tr[a,i,j,k,t].x)},{a},{i},{j},{k},{t}"
+#             for k in K:
+#                 for tau in Tau:
+#                     sol_Al += f" \n{int(Al[tau,a,i,k,t].x)},{tau},{a},{i},{k},{t}"
+#         for k in K:
+#             for j in J:
+#                 sol_Cam += f" \n{int(Cam[i,j,k,t].x)},{i},{j},{k},{t}"    
+#             for  t in T:
+#                 for tau in Tau:
+#                     sol_ExT += f" \n{int(ExT[tau,t,a,i,k].x)},{tau},{t},{a},{i},{k}"
 
-with open("resultados/resultados_Tr.csv", "w") as file:
-    file.write("Tr,a,i,j,k,t")
-    file.write("sol_Tr")
+# with open("resultados/resultados_Tr.csv", "w") as file:
+#     file.write("Tr,a,i,j,k,t")
+#     file.write("sol_Tr")
 
-with open("resultados/resultados_Cam.csv", "w") as file:
-    file.write("Cam,i,j,k,t")
-    file.write("sol_Cam")
+# with open("resultados/resultados_Cam.csv", "w") as file:
+#     file.write("Cam,i,j,k,t")
+#     file.write("sol_Cam")
 
-with open("resultados/resultados_Al.csv", "w") as file:
-    file.write("Al,tau,a,i,k,t")
-    file.write("sol_Al")
+# with open("resultados/resultados_Al.csv", "w") as file:
+#     file.write("Al,tau,a,i,k,t")
+#     file.write("sol_Al")
 
-with open("resultados/resultados_ExT.csv", "w") as file:
-    file.write("ExT,tau,t,a,i,k")
-    file.write("sol_ExT")
+# with open("resultados/resultados_ExT.csv", "w") as file:
+#     file.write("ExT,tau,t,a,i,k")
+#     file.write("sol_ExT")
 
 
 # Guardado de resultados

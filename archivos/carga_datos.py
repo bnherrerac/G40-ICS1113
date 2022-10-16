@@ -30,7 +30,7 @@ def alimentos(tipos):
     # print(total)
     return alimentos, cant_por_tipo, total
 
-# alimentos(tipos)
+alimentos(tipos)
 
 
 # CFB_i [CLP/semana]
@@ -164,7 +164,7 @@ def demanda(tipos):
     # print(demanda)
     return(demanda)
 
-demanda(tipos)    
+# demanda(tipos)    
 
 
 # P_a,i [kg/unidad]
@@ -378,8 +378,8 @@ def vencimiento(tipos):
     for tipo in tipos:
         lista = vencimiento[tipo]
         vencimiento[tipo] = {k:v for elem in lista for k,v in elem.items()}
-    print("Vencimiento =", vencimiento)
+    # print("Vencimiento =", vencimiento)
     return(vencimiento)
 
 
-vencimiento(tipos)
+# vencimiento(tipos)
