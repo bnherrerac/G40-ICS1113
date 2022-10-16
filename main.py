@@ -1,7 +1,6 @@
 from gurobipy import GRB, Model, quicksum
 from gurobipy import *
 import pandas as pd # Si sale error, escribir en cmd pip install pandas
-
 import numpy as np # Si sale error, escribir en cmd pip install numpy
 from archivos.carga_datos import *
 
@@ -27,9 +26,7 @@ distancia_por_pais = distancia_por_pais(rutas)
 peso_promedio = peso_promedio(tipos)
 stock_inicial = stock_inicial(tipos)
 sueldo = sueldo()
-# volumen_promedio = volumen_promedio(tipos)
 vencimiento = vencimiento(tipos)
-volumen_bodegas = volumen_bodegas()
 
 #------------------------------- Rangos -------------------------------#
 cant_de_centros = 20
@@ -69,13 +66,11 @@ P_m = 31000 # 31000 kg es lo más común en camiones de transporte de alimentos,
 
 
 CFB_i = {(i): int(costo_fijo_almacenamiento[dict_tipos[i]]) for i in I}
-# VB_i = {(i): int(volumen_bodegas[dict_tipos[i]]) for i in I}
 CTr_i = {(i): int(costo_adicional_camiones[dict_tipos[i]]) for i in I}
 CAl_i = {(i): float(costo_unitario_almacenamiento[dict_tipos[i]]) for i in I}
 q_ai = {(a,i): int(stock_inicial[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 d_ai = {(a,i): int(demanda[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 P_ai = {(a,i): float(peso_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
-# V_ai = {(a,i): float(volumen_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 H_ai = {(a,i): float(costo_vencimiento[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 l_rp = {(r,p): int(distancia_por_pais[dict_rutas[r]][dict_paises[p]]) for r in R for p in P}
 PC_p = {(p): int(costo_combustible[dict_paises[p]]) for p in P}
@@ -111,7 +106,6 @@ ExT = model.addVars(T, A, I, K, Tau, vtype=GRB.CONTINUOUS, name="ExT")
 print("Agregando restricciones")
 model.addConstrs((Cam[i,j,k,t] <= N_i[i] for i in I for j in J for k in K for t in T), name="R2")
 model.addConstrs((Tr[a,i,j,k,t]*P_ai[(a,i)] <= P_m for a in A for i in I for j in J for k in K for t in T), name="R3.1")
-# model.addConstr((Tr[a,i,j,k,t]*V_ai[(a,i)] <= V_m for a in A for i in I for j in J for k in K for t in T), name="R3.2")
 cont = 0
 for t in T:
     print(f"Agregando restricciones acumulativas para t = {t}")
@@ -129,7 +123,6 @@ for t in T:
     cont += 1
 
 model.addConstrs((Al[tau,a,i,k,t] >= ExT[t,a,i,k,tau] for a in A for i in I for k in K for t in T), name="R8") 
-# model.addConstr((Cam[i,j,k,t] >= quicksum(((Tr[a,i,j,k,t]*V_ai)/V_m) for a in A) for i in I for t in T for j in J for k in K), name="R9")
 
 #------------------------- Función objetivo -------------------------#
 

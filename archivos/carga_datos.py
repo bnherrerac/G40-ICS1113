@@ -53,25 +53,6 @@ def costo_fijo_almacenamiento():
 # costo_fijo_almacenamiento()
 
 
-# VB_i [m^3]
-# Volumen máximo que puede almacenar una bodega de alimentos tipo i
-
-def volumen_bodegas():
-    archivo = open("archivos/volumen_bodegas.csv", "r")
-    datos = archivo.readlines()
-    archivo.close()
-    volumen_bodegas = {}
-    for i in range(1,len(datos)):
-        linea = datos[i].split("\n")[0].split(",")
-        # print(linea)
-        # volumen_bodegas.append(linea)
-        volumen_bodegas[linea[0]] = linea[1]
-    # print(volumen_bodegas)
-    return(volumen_bodegas)
-
-# volumen_bodegas()
-
-
 # CTR_i [CLP/camión*semana]
 # Costo adicional asociado al acondicionamiento de un camión de la categoría i por una semana
 
@@ -194,32 +175,6 @@ def peso_promedio(tipos):
 
 # peso_promedio(tipos)
 
-# V_a,i [m^3/unidad]
-# Volumen promedio de una unidad de alimento a de la categoría i
-
-def volumen_promedio(tipos):
-    archivo = open("archivos/volumen_promedio.csv", "r")
-    datos = archivo.readlines()
-    archivo.close()
-    volumen_promedio = {}
-    
-    for tipo in tipos:
-        volumen_promedio[tipo] = []
-
-    for i in range(1,len(datos)):
-        linea = datos[i].split("\n")[0].split(",")
-        # print(linea)
-        for tipo in tipos:
-            if linea[0] == tipo:
-                volumen_promedio[tipo].append({linea[1]:linea[2]})
-
-    for tipo in tipos:
-        lista = volumen_promedio[tipo]
-        volumen_promedio[tipo] = {k:v for elem in lista for k,v in elem.items()}
-    # print(volumen_promedio)
-    return(volumen_promedio)
-
-# volumen_promedio(tipos)
 
 # H_a,i [$/unidad]
 # Costo asociado a desechar unidad de alimento a de tipo i
