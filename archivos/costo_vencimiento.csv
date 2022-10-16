@@ -1,10 +1,8 @@
 ﻿Tipo,Alimento,Costodevencimiento
-Congelado,Asiento,62.9
 Congelado,Carne molida,440.5
 Congelado,Chuleta de cerdo centro o vetada,368.9
 Congelado,Choclo congelado,297.3
 Congelado,Pulpa de cerdo,343.4
-Congelado,Carne de pavo molida,121.4
 Congelado,Pechuga de pollo,356.1
 Congelado,Pollo entero,958.1
 Congelado,Trutro de pollo,882.3
@@ -16,7 +14,6 @@ Refrigerado,Queso Gouda,621.4
 Refrigerado,Quesillo y queso fresco con sal,103.4
 Refrigerado,Queso crema,42.2
 Refrigerado,Margarina,239
-Refrigerado,Agua mineral,84
 Refrigerado,Bebida gaseosa tradicional,881.9
 Refrigerado,Jugo liquido,167.2
 Hortofruticola,Plátano,1368.7
@@ -27,5 +24,4 @@ Hortofruticola,Limon,218
 Hortofruticola,Tomate,812.7
 Hortofruticola,Cebolla nueva,265.4
 Hortofruticola,Papa de guarda,1110.8
-Hortofruticola,Zanahoria,204.1
 Hortofruticola,Palta,497.3
