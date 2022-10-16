@@ -1,31 +1,31 @@
 ﻿Nomenclatura:Tipo,Alimento,Pesopromedio
-Alimento;pesopromedio (en kilos)*peso promedio depende de como se comercializa (cajas de hartos ilos, por unidad, por malla, etc) info sacada de boletín diario del 14/10 del mercado lo valledor
-Carne molida;0.5
-Chuleta de cerdo centro o vetada;0.9
-Choclo congelado;0.5
-Pulpa de cerdo;0.9
-Pechuga de pollo;0.8
-Pollo entero;2
-Trutro de pollo;0.8
-Salchicha y vienesa de ave;1
-Jamon de cerdo;0.2
-Pate;0.125
-Yogurt;1
-Queso Gouda;0.25
-Quesillo y queso fresco con sal;0.3
-Queso crema;0.2
-Margarina;0.5
-Aceite vegetal combinado o puro;1 
-Plátano;0.15
-Manzana;0.2
-Lechuga;1.2
-Zapallo;1
-Limon;1
-Tomate;0.25
-Cebolla nueva;1
-Papa de guarda;2
-Bebida gaseosa tradicional;1.5
-Jugo liquido;1.5
-Nectar liquido;1
-Palta;0.3
+Tipo;Alimento;pesopromedio (en kilos)*peso promedio depende de como se comercializa (cajas de hartos ilos, por unidad, por malla, etc) info sacada de boletín diario del 14/10 del mercado lo valledor
+Congelado;Carne molida;0.5
+Congelado;Chuleta de cerdo centro o vetada;0.9
+Congelado;Choclo congelado;0.5
+Congelado;Pulpa de cerdo;0.9
+Congelado;Pechuga de pollo;0.8
+Congelado;Pollo entero;2
+Congelado;Trutro de pollo;0.8
+Congelado;Salchicha y vienesa de ave;1
+Refrigerado;Jamon de cerdo;0.2
+Refrigerado;Pate;0.125
+Refrigerado;Yogurt;1
+Refrigerado;Queso Gouda;0.25
+Refrigerado;Quesillo y queso fresco con sal;0.3
+Refrigerado;Queso crema;0.2
+Refrigerado;Margarina;0.5
+Hortofruticola;Aceite vegetal combinado o puro;1 
+Hortofruticola;Plátano;0.15
+Hortofruticola;Manzana;0.2
+Refrigerado;Lechuga;1.2
+Hortofruticola;Zapallo;1
+Hortofruticola;Limon;1
+Hortofruticola;Tomate;0.25
+Hortofruticola;Cebolla nueva;1
+Hortofruticola;Papa de guarda;2
+Refrigerado;JBebida gaseosa tradicional;1.5
+Refrigerado;JJugo liquido;1.5
+Refrigerado;JNectar liquido;1
+Hortofruticola;Palta;0.3
 
