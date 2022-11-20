@@ -30,7 +30,7 @@ def alimentos(tipos):
     # print(total)
     return alimentos, cant_por_tipo, total
 
-alimentos(tipos)
+# alimentos(tipos)
 
 
 # CFB_i [CLP/semana]
@@ -113,7 +113,7 @@ def stock_inicial(tipos):
 
     for tipo in tipos:
         lista = stock_inicial[tipo]
-        stock_inicial[tipo] = {k:v for elem in lista for k,v in elem.items()}
+        stock_inicial[tipo] = {k:str(2*int(v)) for elem in lista for k,v in elem.items()}
     # print(stock_inicial)
     return(stock_inicial)
 
