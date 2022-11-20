@@ -35,14 +35,14 @@ vencimiento = vencimiento(tipos)
 
 cant_de_centros = 10
 cant_de_bodegas = 4
-cant_de_camiones = 5
+cant_de_camiones = 30
 
 
 # T = range(1, 52 + 1)    #tiempo
 # Tau = range(1, 52 + 1)  #tiempo de llegada
 
-T = range(1, 10 + 1)    #tiempo
-Tau = range(1, 10 + 1)  #tiempo de llegada
+T = range(1, 20 + 1)    #tiempo
+Tau = range(1, 20 + 1)  #tiempo de llegada
 
 
 I = range(1, len(cant_por_tipo) + 1) # Tipos de alimentos 1: Hortofrutícola 2:Congelado 3:Refrigerado
@@ -80,12 +80,21 @@ CFB_i = {(i): int(costo_fijo_almacenamiento[dict_tipos[i]]) for i in I}
 CTr_i = {(i): int(costo_adicional_camiones[dict_tipos[i]]) for i in I}
 CAl_i = {(i): float(costo_unitario_almacenamiento[dict_tipos[i]]) for i in I} # Arreglar este valor
 q_ai = {(a,i): int(stock_inicial[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
+
+
 Omega = 100000000
 
 # Propiedades de los alimentos
 d_ai = {(a,i): int(demanda[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 P_ai = {(a,i): float(peso_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 H_ai = {(a,i): float(costo_vencimiento[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
+
+print("i=1:", dict_tipos[1])
+print("a=9", dict_alimentos[1][9])
+print("q_ai[(9,1)]=",q_ai[(9,1)])
+print("d_ai[(9,1)]=", d_ai[(9,1)])
+
+
 
 # Ruta
 l_rp = {(r,p): int(distancia_por_pais[dict_rutas[r]][dict_paises[p]]) for r in R for p in P}
@@ -197,59 +206,63 @@ model.optimize()
 status = model.status
 if status == GRB.UNBOUNDED:
     print("The model cannot be solved because it is unbounded")
-if status == GRB.OPTIMAL:
-    print("The optimal objective is %g" %model.objVal)
-if status != GRB.INF_OR_UNBD and status != GRB.INFEASIBLE:
+elif status == GRB.OPTIMAL:
+    print("The optimal objective is %g" %model.ObjVal)
+else:
     print("Optimization was stopped with status %d" %status)
 
-print("Computing IIS")
-model.computeIIS()
-if model.IISMinimal:
-    print("IIS is minimal.")
-else:
-    print("IIS is not minimal.")
-print("\nThe following constraint(s) cannot be satisfied:")
-for c in model.getConstrs():
-    if c.IISConstr:
-        print("%s" %c.constrName)
-# valor_objetivo = model.ObjNVal
-# # print(f"El costo minimizado es de {valor_objetivo} CLP durante todo el año.")
+if status == GRB.INFEASIBLE:
+    print("Computing IIS")
+    model.computeIIS()
+    if model.IISMinimal:
+        print("IIS is minimal.")
+    else:
+        print("IIS is not minimal.")
+    print("\nThe following constraint(s) cannot be satisfied:")
+    for c in model.getConstrs():
+        if c.IISConstr:
+            print("%s" %c.constrName)
+        
+print("El costo minimizado es de",model.ObjVal,"CLP durante todo el año.")
 
-# #------------------------- Escritura de datos en resultados -------------------------#
+#------------------------- Escritura de datos en resultados -------------------------#
 
-# sol_Tr = ""
-# sol_Cam = ""
-# sol_Al = ""
-# sol_ExT = ""
+sol_Tr = ""
+sol_Cam = ""
+sol_Al = ""
+sol_ExT = ""
 
-# for t in T:
-#     for i in I:
-#         for a in A:
-#             for j in J:
-#                 for k in K:
-#                     sol_Tr += f" \n{int(Tr[a,i,j,k,t].x)},{a},{i},{j},{k},{t}"
-#             for k in K:
-#                 for tau in Tau:
-#                     sol_Al += f" \n{int(Al[tau,a,i,k,t].x)},{tau},{a},{i},{k},{t}"
-#         for k in K:
-#             for j in J:
-#                 sol_Cam += f" \n{int(Cam[i,j,k,t].x)},{i},{j},{k},{t}"    
-#             for  t in T:
-#                 for tau in Tau:
-#                     sol_ExT += f" \n{int(ExT[t,a,i,k,tau].x)},{t},{a},{i},{k},{tau}"
+for t in T:
+    for i in I:
+        for a in A:
+            for j in J:
+                for k in K:
+                    for e in E:
+                        sol_Tr += f" \n{int(Tr[a,i,j,k,t,e].x)},{a},{i},{j},{k},{t}.{e}"
+            for k in K:
+                for tau in Tau:
+                    sol_Al += f" \n{int(Al[tau,a,i,k,t].x)},{tau},{a},{i},{k},{t}"
+        for k in K:
+            for j in J:
+                for e in E:
+                    for a in A:
+                        sol_Cam += f" \n{int(Cam[e,a,i,j,k,t].x)},{e},{a},{i},{j},{k},{t}"    
+            for  t in T:
+                for tau in Tau:
+                    sol_ExT += f" \n{int(ExT[t,a,i,k,tau].x)},{t},{a},{i},{k},{tau}"
 
-# with open("resultados/resultados_Tr.csv", "w") as file:
-#     file.write("Tr,a,i,j,k,t")
-#     file.write(sol_Tr)
+with open("resultados/resultados_Tr.csv", "w") as file:
+    file.write("Tr,a,i,j,k,t,e")
+    file.write(sol_Tr)
 
-# with open("resultados/resultados_Cam.csv", "w") as file:
-#     file.write("Cam,i,j,k,t")
-#     file.write(sol_Cam)
+with open("resultados/resultados_Cam.csv", "w") as file:
+    file.write("Cam,e,a,i,j,k,t")
+    file.write(sol_Cam)
 
-# with open("resultados/resultados_Al.csv", "w") as file:
-#     file.write("Al,tau,a,i,k,t")
-#     file.write(sol_Al)
+with open("resultados/resultados_Al.csv", "w") as file:
+    file.write("Al,tau,a,i,k,t")
+    file.write(sol_Al)
 
-# with open("resultados/resultados_ExT.csv", "w") as file:
-#     file.write("ExT,t,a,i,k,tau")
-#     file.write(sol_ExT)
+with open("resultados/resultados_ExT.csv", "w") as file:
+    file.write("ExT,t,a,i,k,tau")
+    file.write(sol_ExT)
