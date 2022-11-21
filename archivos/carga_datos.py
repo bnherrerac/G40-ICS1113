@@ -84,7 +84,7 @@ def costo_unitario_almacenamiento():
         linea = datos[i].split("\n")[0].split(",")
         # print(linea)
         # costo_unitario_almacenamiento.append(linea)
-        costo_unitario_almacenamiento[linea[0]] = linea[1]
+        costo_unitario_almacenamiento[linea[0]] = str(float(linea[1])*10)
     # print(costo_unitario_almacenamiento)
     return(costo_unitario_almacenamiento)
 
@@ -113,7 +113,9 @@ def stock_inicial(tipos):
 
     for tipo in tipos:
         lista = stock_inicial[tipo]
-        stock_inicial[tipo] = {k:str(2*int(v)) for elem in lista for k,v in elem.items()}
+        # stock_inicial[tipo] = {k:str(2*int(v)) for elem in lista for k,v in elem.items()}
+        # stock_inicial[tipo] = {k:v for elem in lista for k,v in elem.items()}
+        stock_inicial[tipo] = {k:str(0) for elem in lista for k,v in elem.items()}
     # print(stock_inicial)
     return(stock_inicial)
 
@@ -141,7 +143,9 @@ def demanda(tipos):
 
     for tipo in tipos:
         lista = demanda[tipo]
-        demanda[tipo] = {k:v for elem in lista for k,v in elem.items()}
+        # demanda[tipo] = {k:v for elem in lista for k,v in elem.items()}
+        # demanda[tipo] = {k:str(round(int(v)/100)) for elem in lista for k,v in elem.items()}
+        demanda[tipo] = {k:str(round(int(v))) for elem in lista for k,v in elem.items()}
     # print(demanda)
     return(demanda)
 

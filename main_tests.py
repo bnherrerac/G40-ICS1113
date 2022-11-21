@@ -35,7 +35,7 @@ vencimiento = vencimiento(tipos)
 
 cant_de_centros = 4
 cant_de_bodegas = 4
-cant_de_camiones = 6
+cant_de_camiones = 30
 
 
 # T = range(1, 52 + 1)    #tiempo
@@ -89,9 +89,9 @@ P_ai = {(a,i): float(peso_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i i
 H_ai = {(a,i): float(costo_vencimiento[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 
 print("i=1:", dict_tipos[1])
-print("a=9", dict_alimentos[1][9])
-print("q_ai[(9,1)]=",q_ai[(9,1)])
-print("d_ai[(9,1)]=", d_ai[(9,1)])
+print("a=8", dict_alimentos[1][8])
+print("q_ai[(8,1)]=",q_ai[(8,1)])
+print("d_ai[(8,1)]=", d_ai[(8,1)])
 
 
 
@@ -138,11 +138,11 @@ print("Agregando restricciones")
 
 # Restricción 2
 # sum_A sum_K sum_J sum_I Cam[e,a,i,j,k,t] \leq 1   \forall t in T, e in E
-model.addConstrs( (quicksum(Cam[e,a,i,j,k,t] for i in I for j in J for k in K for a in A) <= 1 for e in E), name="R2")
+model.addConstrs((quicksum(Cam[e,a,i,j,k,t] for i in I for j in J for k in K for a in A) <= 10 for e in E), name="R2")
 
 # Restricción 3
-# sum_E sum_K Cam[e,a,i,j,k,t] \leq N[i]    \forall i in I, j in J, t in T
-model.addConstrs((quicksum(Cam[e,a,i,j,k,t] for k in K for e in E) <= N_i[i] for i in I for j in J for t in T), name="R3")
+# sum_E sum_K Cam[e,a,i,j,k,t] \leq N[i]    \forall a in A, i in I, j in J, t in T
+model.addConstrs((quicksum(Cam[e,a,i,j,k,t] for j in J for k in K for e in E for a in A for i in I) <= N_i[i] for t in T), name="R3")
 
 # Restricción 4
 # Omega * Cam[e,a,i,j,k,t] >= Tr[a,i,j,k,t,e]   \forall i in I, j in J, t in T, k in K, a in A, e in E
@@ -150,10 +150,16 @@ model.addConstrs((Omega * Cam[e,a,i,j,k,t] >= Tr[a,i,j,k,t,e] for i in I for j i
 
 # Restricción 5
 # Tr[a,i,j,k,t,e] * P_ai <= P
-model.addConstrs((Tr[a,i,j,k,t,e]*P_ai[(a,i)] <= P_m for a in A for i in I for j in J for k in K for t in T for e in E), name="R5")
+# model.addConstrs((Tr[a,i,j,k,t,e]*P_ai[(a,i)] <= P_m for a in A for i in I for j in J for k in K for t in T for e in E), name="R5")
 
 # Restricción 9, inventario inicial. q_ai duplicado
 model.addConstrs((Al[1,a,i,k,1]== q_ai[a,i]-ExT[1,a,i,k,1] for i in I for a in A for k in K), name="R9")
+
+# Restricción 12, lo transportado por todos los camiones desde todos los centros y hacia todas las bodegas, suma lo que llega en el tiempo t entre todas las bodegas.
+model.addConstrs((quicksum(Tr[a,i,j,k,t,e] for e in E for j in J for k in K) == quicksum(Al[t,a,i,k,t] for k in K) for a in A for i in I for t in T), name="R12")
+
+# Restricción 5 modificada
+model.addConstrs((quicksum(Tr[a,i,j,k,t,e]*P_ai[(a,i)] for a in A)<= P_m for i in I for j in J for t in T for k in K for e in E), name="R5mod")
 
 cont = 0
 for t in T:
@@ -179,7 +185,7 @@ for t in T:
     if t>=2:
         Tau_array_pop = Tau_array
         Tau_array.pop()
-        model.addConstrs((quicksum(Al[tau,a,i,k,t] for tau in Tau_array) == (quicksum(Al[tau,a,i,k,t] for tau in Tau_array_pop) - Tr[a,i,j,k,t-1,e]-quicksum(ExT[t,a,i,k,tau] for tau in Tau_array)) for i in I for a in A for k in K for j in J for e in E), name=name_10)
+        model.addConstrs((quicksum(Al[tau,a,i,k,t] for tau in Tau_array) == (quicksum(Al[tau,a,i,k,t] for tau in Tau_array_pop) - Tr[a,i,j,k,t,e]-quicksum(ExT[t,a,i,k,tau] for tau in Tau_array)) for i in I for a in A for k in K for j in J for e in E), name=name_10)
     cont += 1
 
 
@@ -207,6 +213,7 @@ if status == GRB.UNBOUNDED:
     print("The model cannot be solved because it is unbounded")
 elif status == GRB.OPTIMAL:
     print("The optimal objective is %g" %model.ObjVal)
+    print("El costo minimizado es de",model.ObjVal,"CLP durante todo el año.")
 else:
     print("Optimization was stopped with status %d" %status)
 
@@ -221,8 +228,6 @@ if status == GRB.INFEASIBLE:
     for c in model.getConstrs():
         if c.IISConstr:
             print("%s" %c.constrName)
-        
-print("El costo minimizado es de",model.ObjVal,"CLP durante todo el año.")
 
 #------------------------- Escritura de datos en resultados -------------------------#
 
@@ -237,7 +242,7 @@ for t in T:
             for j in J:
                 for k in K:
                     for e in E:
-                        sol_Tr += f" \n{int(Tr[a,i,j,k,t,e].x)},{a},{i},{j},{k},{t}.{e}"
+                        sol_Tr += f" \n{int(Tr[a,i,j,k,t,e].x)},{a},{i},{j},{k},{t},{e}"
             for k in K:
                 for tau in Tau:
                     sol_Al += f" \n{int(Al[tau,a,i,k,t].x)},{tau},{a},{i},{k},{t}"
@@ -250,18 +255,18 @@ for t in T:
                 for tau in Tau:
                     sol_ExT += f" \n{int(ExT[t,a,i,k,tau].x)},{t},{a},{i},{k},{tau}"
 
-with open("resultados/resultados_Tr.csv", "w") as file:
+with open("resultados/resultados_Tr_alt.csv", "w") as file:
     file.write("Tr,a,i,j,k,t,e")
     file.write(sol_Tr)
 
-with open("resultados/resultados_Cam.csv", "w") as file:
+with open("resultados/resultados_Cam_alt.csv", "w") as file:
     file.write("Cam,e,a,i,j,k,t")
     file.write(sol_Cam)
 
-with open("resultados/resultados_Al.csv", "w") as file:
+with open("resultados/resultados_Al_alt.csv", "w") as file:
     file.write("Al,tau,a,i,k,t")
     file.write(sol_Al)
 
-with open("resultados/resultados_ExT.csv", "w") as file:
+with open("resultados/resultados_ExT_alt.csv", "w") as file:
     file.write("ExT,t,a,i,k,tau")
     file.write(sol_ExT)
