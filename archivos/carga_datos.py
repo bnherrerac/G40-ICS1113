@@ -84,7 +84,7 @@ def costo_unitario_almacenamiento():
         linea = datos[i].split("\n")[0].split(",")
         # print(linea)
         # costo_unitario_almacenamiento.append(linea)
-        costo_unitario_almacenamiento[linea[0]] = str(float(linea[1])*10)
+        costo_unitario_almacenamiento[linea[0]] = str(float(linea[1]))
     # print(costo_unitario_almacenamiento)
     return(costo_unitario_almacenamiento)
 

@@ -36,17 +36,11 @@ sueldo = sueldo()
 
 cant_de_centros = 1
 cant_de_bodegas = 1
-cant_de_camiones = 10
+cant_de_camiones = 9
 
+tmax = 10
 
-
-
-
-
-# T = range(1, 52 + 1)    #tiempo
-# Tau = range(1, 52 + 1)  #tiempo de llegada
-
-T = range(1, 52 + 1)    #tiempo
+T = range(1, tmax + 1)    #tiempo
 
 I = range(1, len(cant_por_tipo) + 1) # Tipos de alimentos 1: Hortofrutícola 2:Congelado 3:Refrigerado
 A = range(1, cant_por_tipo[0] + 1) # Alimentos de cada tipo
@@ -55,8 +49,6 @@ K = range(1, cant_de_bodegas + 1) # Cantidad de bodegas de almacenamiento
 R = range(1, len(rutas) + 1) # 1:Norte, 2:Centro, 3:Sur
 P = range(1, len(paises) + 1) # 1:Chile, 2:Argentina
 E = range(1, cant_de_camiones + 1)
-
-
 
 demandas = [1]
 times = T
@@ -92,14 +84,13 @@ for p in range(len(demandas)):
     N_i = {(i): flota_de_camiones[j] for (i,j) in zip(I,range(len(I)))}
     R_i = {"1": "Norte", "2": "Centro", "3": "Sur"}
     V_m = 90 # 90 m3 es lo más común en camiones de transporte de alimentos, ver fuentes de abajo. 
-    # P_m = 31000 # 31000 kg es lo más común en camiones de transporte de alimentos, ver fuentes de abajo.
-    P_m = 10000
+    P_m = 25000 # 31000 kg es lo más común en camiones de transporte de alimentos, ver fuentes de abajo. 
     CFB_i = {(i): int(costo_fijo_almacenamiento[dict_tipos[i]]) for i in I}
     CTr_i = {(i): int(costo_adicional_camiones[dict_tipos[i]]) for i in I}
     CAl_i = {(i): float(costo_unitario_almacenamiento[dict_tipos[i]]) for i in I} # Arreglar este valor
     q_ai = {(a,i): int(stock_inicial[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 
-    Omega = 100000000
+    Omega = 10000000
     # Propiedades de los alimentos
     d_ai = {(a,i): int(demanda[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
     P_ai = {(a,i): float(peso_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
@@ -132,8 +123,7 @@ for p in range(len(demandas)):
 
     #------------------------- Variables -------------------------#
     print("Definiendo variables")
-    # Cam e, j, k, t, i
-    Cam = model.addVars(E, A, I, J, K, T, vtype=GRB.BINARY, name="Cam")
+    Cam = model.addVars(E, I, J, K, T, vtype=GRB.BINARY, name="Cam")
     Tr = model.addVars(A, I, J, K, T, E, vtype=GRB.CONTINUOUS, name="Tr")
     Al = model.addVars(A, I, K, T, vtype=GRB.CONTINUOUS, name="Al")
     ExT = model.addVars(A, I, K, T, vtype=GRB.CONTINUOUS, name="ExT")
@@ -143,22 +133,28 @@ for p in range(len(demandas)):
 
     # Restricción 2
     # sum_A sum_K sum_J sum_I Cam[e,a,i,j,k,t] \leq 1   \forall t in T, e in E
-    model.addConstrs((quicksum(Cam[e,a,i,j,k,t] for j in J for k in K for a in A for i in I) <= 10 for t in T for e in E), name="R2")
+
+    # Cada camión puede llevar 1 solo tipo de cosas
+    # suma sobre i da 1
+    model.addConstrs((quicksum(Cam[e,i,j,k,t] for j in J for k in K for i in I) <= 1 for t in T for e in E), name="R2")
+    model.addConstrs((quicksum(Cam[e,i,j,k,t] for j in J for k in K for e in E for i in I) <= cant_de_camiones for t in T), name="R2b")
+
+
 
     # Restricción 4
     # Si no se transporta nada, Cam = 0
     # Omega * Cam[e,a,i,j,k,t] >= Tr[a,i,j,k,t,e]   \forall i in I, j in J, t in T, k in K, a in A, e in E
-    model.addConstrs((Cam[e,a,i,j,k,t] <= Tr[a,i,j,k,t,e] for i in I for j in J for t in T for k in K for a in A for e in E), name="R4")
+    model.addConstrs((Cam[e,i,j,k,t]*(1/Omega) <= quicksum(Tr[a,i,j,k,t,e] for a in A) for i in I for j in J for t in T for k in K for e in E), name="R4")
 
     # Restricción sobre peso máximo de los camiones
-    # model.addConstrs((quicksum(Tr[a,i,j,k,t,e]*P_ai[(a,i)] for a in A for i in I) <= P_m for j in J for k in K for t in T for e in E), name="Rpeso")
+    model.addConstrs((quicksum(Tr[a,i,j,k,t,e]*P_ai[(a,i)] for a in A ) <= P_m for i in I for j in J for k in K for t in T for e in E), name="Rpeso")
 
     # Máximo de capacidad en peso: doble de la demanda
     # model.addConstrs((quicksum(Al[a,i,k,t]*P_ai[(a,i)] for a in A for i in I) <= 50000 for k in K for t in T), name="Rbodega")
 
     # Restricción para que si se transporta, Cam = 1
     # Tr > 0 entonces Cam = 1
-    model.addConstrs((Tr[a,i,j,k,t,e]*(1/Omega) <= Cam[e,a,i,j,k,t] for i in I for e in E for t in T for j in J for k in K for a in A), name="R4cond")
+    model.addConstrs((quicksum(Tr[a,i,j,k,t,e] for a in A)*(1/Omega) <= Cam[e,i,j,k,t] for i in I for e in E for t in T for j in J for k in K), name="R4cond")
 
     # Restricción 9, inventario inicial
     # Inicialmente hay 0 y llega lo que se transporta
@@ -175,13 +171,17 @@ for p in range(len(demandas)):
             print(f"t={t}")
             model.addConstrs((quicksum(Tr[a,i,j,k,t,e] for j in J for e in E) + Al[a,i,k,t-1] - ExT[a,i,k,t] == Al[a,i,k,t] for a in A for k in K for i in I), name="R5final")
 
+
+    ######### NUEVA
+    # model.addConstrs((quicksum(Al[a,i,k,tmax] for k in K) >= d_ai[(a,i)] for a in A for i in I),name="RTfinal") 
+
     # Restricción 7
-    # Todo lo que se extrae de todas las bodegas es mayor o igual a la demanda
+    # Todo lo que se extrae de todas las bodegas es igual a la demanda
     model.addConstrs((quicksum(ExT[a,i,k,t] for k in K) == d_ai[(a,i)] for a in A for i in I for t in T), name="R7")
 
     #------------------------- Función objetivo -------------------------#
 
-    obj = quicksum((PT_r[i]+S_r[i]+quicksum(l_rp[(i,p)]*PC_p[p] for p in P) + M_r[i] + CTr_i[i])*Cam[e,a,i,j,k,t] for a in A for e in E for t in T for i in I for j in J for k in K)
+    obj = quicksum((PT_r[i]+S_r[i]+quicksum(l_rp[(i,p)]*PC_p[p] for p in P) + M_r[i] + CTr_i[i])*Cam[e,i,j,k,t] for e in E for t in T for i in I for j in J for k in K)
 
     obj += quicksum(CFB_i[i] + CAl_i[i]*quicksum(Al[a,i,k,t] for a in A) for t in T for i in I for k in K)
 
@@ -220,7 +220,7 @@ for p in range(len(demandas)):
     sol_ExT = ""
 
 
-    # camiones_array = np.zeros((np.shape(times)[0],np.shape(fe)[0]))
+    camiones_array = np.zeros((np.shape(times)[0],np.shape(fe)[0]))
 
     # Al[a,i,k,t] ExT[a,i,k,t] Tr[a,i,j,k,t,e] Cam[e,a,i,j,k,t]
     for t in T:
@@ -232,7 +232,7 @@ for p in range(len(demandas)):
                             sol_Tr += f" \n{int(Tr[a,i,j,k,t,e].x)},{a},{i},{j},{k},{t},{e}"
                             if a == fa and i == fi:
                                 tr_array_d[t-1,k-1,p]=float(quicksum(Tr[a,i,j,k,t,e].x for a in A for i in I for e in E for j in J).getValue())
-                            # camiones_array[t-1,e-1]=float(quicksum(Tr[a,i,j,k,t,e].x for a in A for i in I for j in J).getValue())
+                                camiones_array[t-1,e-1]=float(quicksum(Tr[a,i,j,k,t,e].x for k in K for a in A for i in I for j in J).getValue())
 
 
                 for k in K:
@@ -243,25 +243,24 @@ for p in range(len(demandas)):
             for k in K:
                 for j in J:
                     for e in E:
-                        for a in A:
-                            sol_Cam += f" \n{int(Cam[e,a,i,j,k,t].x)},{e},{a},{i},{j},{k},{t}"    
+                        sol_Cam += f" \n{int(Cam[e,i,j,k,t].x)},{e},{i},{j},{k},{t}"    
                 for a in A:
                     for t in T:
                         sol_ExT += f" \n{int(ExT[a,i,k,t].x)},{a},{i},{k},{t}"
 
-    with open("resultados/resultados_Tr_sv.csv", "w") as file:
+    with open("resultados/resultados_Tr_sv_camch.csv", "w") as file:
         file.write("Tr,a,i,j,k,t,e")
         file.write(sol_Tr)
 
-    with open("resultados/resultados_Cam_sv.csv", "w") as file:
-        file.write("Cam,e,a,i,j,k,t")
+    with open("resultados/resultados_Cam_sv_camch.csv", "w") as file:
+        file.write("Cam,e,i,j,k,t")
         file.write(sol_Cam)
 
-    with open("resultados/resultados_Al_sv.csv", "w") as file:
+    with open("resultados/resultados_Al_sv_camch.csv", "w") as file:
         file.write("Al,a,i,k,t")
         file.write(sol_Al)
 
-    with open("resultados/resultados_ExT_sv.csv", "w") as file:
+    with open("resultados/resultados_ExT_sv_camch.csv", "w") as file:
         file.write("ExT,a,i,k,t")
         file.write(sol_ExT)
 
@@ -279,13 +278,14 @@ ax.set_ylabel("Unidades")
 ax.ticklabel_format(useOffset=False)
 plt.show()
 
-# fig, ax = plt.subplots()
-# for camion in fe:
-#     ax.plot(T, camiones_array[:,camion-1], label=f"Sum_(a,i,j) Tr[a,i,j,k,t,{camion}]")
-# ax.legend()
-# ax.grid(True)
-# fig.suptitle("Cantidad de alimentos transportada por cada camión.")
-# ax.set_xlabel("Semana")
-# ax.set_ylabel("Unidades")
-# ax.ticklabel_format(useOffset=False)
-# plt.show()
+fig, ax = plt.subplots()
+for camion in fe:
+    ax.plot(T, camiones_array[:,camion-1], label=f"Sum_(a,i,j) Tr[a,i,j,k,t,{camion}]")
+ax.legend()
+ax.grid(True)
+fig.suptitle("Cantidad de alimentos transportada por cada camión.")
+ax.set_xlabel("Semana")
+ax.set_ylabel("Unidades")
+ax.ticklabel_format(useOffset=False)
+plt.show()
+
