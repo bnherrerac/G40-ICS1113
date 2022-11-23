@@ -108,7 +108,11 @@ for prueba in pruebas:
 
         Omega = 10000000
         # Propiedades de los alimentos
-        d_ai = {(a,i): int(round(int(demanda[dict_tipos[i]][dict_alimentos[i][a]])*demandas[p])) for i in I for a in A}
+        if prueba == 0:
+            d_ai = {(a,i): int(round(int(demanda[dict_tipos[i]][dict_alimentos[i][a]])*demandas[p])) for i in I for a in A}
+        else:
+            d_ai = {(a,i): int(round(int(demanda[dict_tipos[i]][dict_alimentos[i][a]]))) for i in I for a in A}
+
         P_ai = {(a,i): float(peso_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 
 
