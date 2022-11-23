@@ -53,10 +53,10 @@ R = range(1, len(rutas) + 1) # 1:Norte, 2:Centro, 3:Sur
 P = range(1, len(paises) + 1) # 1:Chile, 2:Argentina
 E = range(1, cant_de_camiones + 1)
 
-demandas = [1,1.2,1.5]
-mult_costo_combustible = []
-array_camiones =  [7,9,11,13]
-costo_unitario_almacenamiento [1,1.5,2]
+demandas = [1]
+# mult_costo_combustible = []
+# array_camiones =  [7,9,11,13]
+# costo_unitario_almacenamiento [1,1.5,2]
 # Cantidad de camiones pareja por tipo
 
 times = T
