@@ -6,7 +6,10 @@ from archivos.carga_datos import *
 import matplotlib.pyplot as plt
 
 model = Model()
-model.setParam("TimeLimit", 60*30) # 30 min time limit
+# model.setParam("TimeLimit", 60*30) # 30 min time limit
+model.setParam('MIPGap', 0.01)
+
+
 
 #------------------------- Conjuntos iniciales -------------------------#
 paises = ["Chile", "Argentina"]
@@ -36,7 +39,7 @@ sueldo = sueldo()
 
 cant_de_centros = 1
 cant_de_bodegas = 1
-cant_de_camiones = 9
+cant_de_camiones = 15
 
 tmax = 10
 
@@ -50,7 +53,12 @@ R = range(1, len(rutas) + 1) # 1:Norte, 2:Centro, 3:Sur
 P = range(1, len(paises) + 1) # 1:Chile, 2:Argentina
 E = range(1, cant_de_camiones + 1)
 
-demandas = [1]
+demandas = [1,1.2,1.5]
+mult_costo_combustible = []
+array_camiones =  [7,9,11,13]
+costo_unitario_almacenamiento [1,1.5,2]
+# Cantidad de camiones pareja por tipo
+
 times = T
 fa = 1
 fi = 1
@@ -139,7 +147,17 @@ for p in range(len(demandas)):
     model.addConstrs((quicksum(Cam[e,i,j,k,t] for j in J for k in K for i in I) <= 1 for t in T for e in E), name="R2")
     model.addConstrs((quicksum(Cam[e,i,j,k,t] for j in J for k in K for e in E for i in I) <= cant_de_camiones for t in T), name="R2b")
 
+    # model.addConstrs((quicksum(Cam[e,i,j,k,t] for j in J for k in K for e in E for i in I)), name="R2c")
 
+    # para cierto t, j, k, e Cam[e,i,j,k,t] = 1 entonces Cam[e,i,j,k,t] = 0 para los otros
+ 
+    for i in T:
+        t_var = list(T)
+        print(t_var)
+        t_var.remove(i)
+        print(f"t_var para i = {i}")
+        print(t_var)
+        model.addConstrs(((1/Omega)*quicksum(Cam[e,i,j,k,i1] for i1 in t_var)<=Cam[e,i,j,k,t] for i in I for j in J for k in K for e in E for t in T), name="R2c")
 
     # Restricción 4
     # Si no se transporta nada, Cam = 0

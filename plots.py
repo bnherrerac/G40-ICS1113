@@ -8,7 +8,7 @@ alimentos, cant_por_tipo, total_alimentos = alimentos(tipos)
 
 cant_de_centros = 1
 cant_de_bodegas = 1
-cant_de_camiones = 9
+cant_de_camiones = 30
 
 tmax = 10
 

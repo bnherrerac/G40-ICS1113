@@ -1,0 +1,5 @@
+from gurobipy import GRB, Model, quicksum
+from gurobipy import *
+
+a = range(1, 3)
+print(type(list(a)))
