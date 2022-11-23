@@ -60,6 +60,8 @@ array_camiones =  [9,13,17]
 mult_costo_alm = [1,1.5,2]
 # Cantidad de camiones pareja por tipo
 
+valores_objetivo = np.zeros((3,3))
+
 times = T
 fa = 1
 fi = 1
@@ -67,8 +69,6 @@ fk = K
 fe = E
 # al_array = np.zeros((np.shape(times)[0],np.shape(fk)[0]))
 # tr_array = np.zeros((np.shape(times)[0],np.shape(fk)[0]))
-al_array_d = np.zeros((np.shape(times)[0],np.shape(fk)[0],len(demandas)))
-tr_array_d = np.zeros((np.shape(times)[0],np.shape(fk)[0],len(demandas)))
 for prueba in pruebas:
     for p in range(3):
         model.setParam("TimeLimit", 60*10)
@@ -227,6 +227,7 @@ for prueba in pruebas:
         elif status == GRB.OPTIMAL:
             print("The optimal objective is %g" %model.ObjVal)
             print("El costo minimizado es de",model.ObjVal,"CLP durante todo el año.")
+
         else:
             print("Optimization was stopped with status %d" %status)
 
@@ -241,7 +242,8 @@ for prueba in pruebas:
             for c in model.getConstrs():
                 if c.IISConstr:
                     print("%s" %c.constrName)
-
+        valores_objetivo[prueba, p] = model.ObjVal
+        print(f"El valor objetivo guardado es {valores_objetivo[prueba,p]}")
         #------------------------- Escritura de datos en resultados -------------------------#
 
         sol_Tr = ""
@@ -328,28 +330,8 @@ for prueba in pruebas:
             with open(f"resultados/resultados_ExT_costo_almacenar_{str(mult_costo_alm[p])}.csv", "w") as file:
                 file.write("ExT,a,i,k,t")
                 file.write(sol_ExT)            
-    # fig, ax = plt.subplots()
 
-    # for p in range(len(demandas)):
-    #     for current_k in fk:
-    #         ax.plot(T, al_array_d[:,current_k-1,p], label=f"sum_(a,i) Al[a,i,{current_k},t]; C={demandas[p]}")
-    #         ax.plot(T, tr_array_d[:,current_k-1,p], label=f"Sum_(a,i,e,j) Tr[a,i,j,{current_k},t,e]; C={demandas[p]}")
-    # ax.legend()
-    # ax.grid(True)
-    # fig.suptitle("Cantidad almacenada y cantidad transportada de todos los alimentos, según multiplicador de costo de combustible C.")
-    # ax.set_xlabel("Semana")
-    # ax.set_ylabel("Unidades")
-    # ax.ticklabel_format(useOffset=False)
-    # plt.show()
-
-    # fig, ax = plt.subplots()
-    # for camion in fe:
-    #     ax.plot(T, camiones_array[:,camion-1], label=f"Sum_(a,i,j) Tr[a,i,j,k,t,{camion}]")
-    # ax.legend()
-    # ax.grid(True)
-    # fig.suptitle("Cantidad de alimentos transportada por cada camión.")
-    # ax.set_xlabel("Semana")
-    # ax.set_ylabel("Unidades")
-    # ax.ticklabel_format(useOffset=False)
-    # plt.show()
+print("Valores objetivo para prueba 0: ", valores_objetivo[0,:])
+print("Valores objetivo para prueba 1: ", valores_objetivo[1,:])
+print("Valores objetivo para prueba 2: ", valores_objetivo[2,:])
 
