@@ -1,15 +1,20 @@
 from gurobipy import GRB, Model, quicksum
 from gurobipy import *
-import pandas as pd # Si sale error, escribir en cmd pip install pandas
-import numpy as np # Si sale error, escribir en cmd pip install numpy
+import pandas as pd
+import numpy as np
 from archivos.carga_datos import *
 import matplotlib.pyplot as plt
 
+#------------------------- IMPORTANTE -------------------------#
+
+# Este código está modificado para poder hacer las pruebas de análisis de sensibilidad.
+# Se repite la ejecución del código para distintos multiplicadores de demanda, costo
+# de almacenamiento, y distintas cantidades de camiones. Todo lo que está dentro de los
+# ciclos for corresponde a la definición del modelo, y lo que está antes define los diccionarios
+# que se usarán en cada iteración. 
+
 model = Model()
 model.setParam("TimeLimit", 60*30) # 30 min time limit
-# model.setParam('MIPGap', 0.01)
-
-
 
 #------------------------- Conjuntos iniciales -------------------------#
 paises = ["Chile", "Argentina"]
@@ -24,27 +29,19 @@ costo_fijo_almacenamiento = costo_fijo_almacenamiento()
 costo_mantencion = costo_mantencion()
 costo_ruta = costo_ruta()
 costo_unitario_almacenamiento = costo_unitario_almacenamiento()
-# costo_vencimiento = costo_vencimiento(tipos)
 demanda = demanda(tipos)
 distancia_por_pais = distancia_por_pais(rutas)
 peso_promedio = peso_promedio(tipos)
 stock_inicial = stock_inicial(tipos)
 sueldo = sueldo()
-# vencimiento = vencimiento(tipos)
 
 #------------------------------- Rangos -------------------------------#
-# cant_de_centros = 20
-# cant_de_bodegas = 8
-# cant_de_camiones = 30 # Cantidad total de camiones por categoría de alimento, sumado sobre todos los centros de distribución
-
 cant_de_centros = 1
 cant_de_bodegas = 1
 cant_de_camiones = 15
-
 tmax = 10
 
 T = range(1, tmax + 1)    #tiempo
-
 I = range(1, len(cant_por_tipo) + 1) # Tipos de alimentos 1: Hortofrutícola 2:Congelado 3:Refrigerado
 A = range(1, cant_por_tipo[0] + 1) # Alimentos de cada tipo
 J = range(1, cant_de_centros + 1) # Cantidad de centros de distribución
@@ -53,29 +50,29 @@ R = range(1, len(rutas) + 1) # 1:Norte, 2:Centro, 3:Sur
 P = range(1, len(paises) + 1) # 1:Chile, 2:Argentina
 E = range(1, cant_de_camiones + 1)
 
+# Arrays para pruebas
 pruebas = [0,1,2]
 demandas = [1,1.25,1.5]
-# mult_costo_combustible = []
 array_camiones =  [9,13,17]
 mult_costo_alm = [1,1.5,2]
-# Cantidad de camiones pareja por tipo
 
+# Array para guardar valores óptimos luego de terminado el TimeLimit
 valores_objetivo = np.zeros((3,3))
 
+# Arrays auxiliares para graficar
 times = T
 fa = 1
 fi = 1
 fk = K
 fe = E
-# al_array = np.zeros((np.shape(times)[0],np.shape(fk)[0]))
-# tr_array = np.zeros((np.shape(times)[0],np.shape(fk)[0]))
+
+#------------------------- MODELO -------------------------#
+
 for prueba in pruebas:
     for p in range(3):
-        model.setParam("TimeLimit", 60*10)
-        if prueba == 1:
-            cant_de_camiones = array_camiones[p]
-        
+        model.setParam("TimeLimit", 30)        
         #------------------------- Parámetros -------------------------#
+
         print("Definiendo parámetros")
         dict_rutas = {1:"Norte", 2:"Centro", 3:"Sur"}
         dict_paises = {1:"Chile", 2:"Argentina"}
@@ -93,38 +90,32 @@ for prueba in pruebas:
         # }
 
         # Carga, transporte y almacenamiento
+        if prueba == 1: # Prueba de distintas cantidades de camiones
+            cant_de_camiones = array_camiones[p]
         flota_de_camiones = np.array([cant_de_camiones,cant_de_camiones,cant_de_camiones])
+
         N_i = {(i): flota_de_camiones[j] for (i,j) in zip(I,range(len(I)))}
         R_i = {"1": "Norte", "2": "Centro", "3": "Sur"}
         V_m = 90 # 90 m3 es lo más común en camiones de transporte de alimentos, ver fuentes de abajo. 
-        P_m = 25000 # 31000 kg es lo más común en camiones de transporte de alimentos, ver fuentes de abajo. 
+        P_m = 25000 # 31000 kg es lo más común (ver fuentes de abajo), el valor fue reducido para mayor distribución de camiones.
         CFB_i = {(i): int(costo_fijo_almacenamiento[dict_tipos[i]]) for i in I}
         CTr_i = {(i): int(costo_adicional_camiones[dict_tipos[i]]) for i in I}
-        if prueba == 2:
+        
+        if prueba == 2: # Prueba de distintos costos unitarios de almacenamiento
             CAl_i = {(i): float(costo_unitario_almacenamiento[dict_tipos[i]])*mult_costo_alm[p] for i in I} # Arreglar este valor
         else:
             CAl_i = {(i): float(costo_unitario_almacenamiento[dict_tipos[i]]) for i in I} # Arreglar este valor
-        q_ai = {(a,i): int(stock_inicial[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
 
+        q_ai = {(a,i): int(stock_inicial[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
         Omega = 10000000
+
         # Propiedades de los alimentos
-        if prueba == 0:
+        if prueba == 0: # Prueba de distintas demandas de alimentos
             d_ai = {(a,i): int(round(int(demanda[dict_tipos[i]][dict_alimentos[i][a]])*demandas[p])) for i in I for a in A}
         else:
             d_ai = {(a,i): int(round(int(demanda[dict_tipos[i]][dict_alimentos[i][a]]))) for i in I for a in A}
 
         P_ai = {(a,i): float(peso_promedio[dict_tipos[i]][dict_alimentos[i][a]]) for i in I for a in A}
-
-
-        # peso_en_demanda = {(a,i): d_ai[(a,i)]*P_ai[(a,i)] for i in I for a in A}
-        # print(peso_en_demanda)
-        # print("Max peso en demanda: ", max(peso_en_demanda))
-        # print("Alimento para el que es máximo: ", peso_en_demanda[max(peso_en_demanda, key=peso_en_demanda.get)])
-
-        # print("i=1:", dict_tipos[1])
-        # print("a=8", dict_alimentos[1][8])
-        # print("q_ai[(8,1)]=",q_ai[(8,1)])
-        # print("d_ai[(8,1)]=", d_ai[(8,1)])
 
         # Ruta
         l_rp = {(r,p): int(distancia_por_pais[dict_rutas[r]][dict_paises[p]]) for r in R for p in P}
@@ -151,44 +142,22 @@ for prueba in pruebas:
         #------------------------- Restricciones -------------------------#
         print("Agregando restricciones")
 
-        # Restricción 2
-        # sum_A sum_K sum_J sum_I Cam[e,a,i,j,k,t] \leq 1   \forall t in T, e in E
-
         # Cada camión puede llevar 1 solo tipo de cosas
-        # suma sobre i da 1
         model.addConstrs((quicksum(Cam[e,i,j,k,t] for j in J for k in K for i in I) <= 1 for t in T for e in E), name="R2")
+
+        # No se pueden llevar más camiones de la cantidad total que hay en cada tiempo.
         model.addConstrs((quicksum(Cam[e,i,j,k,t] for j in J for k in K for e in E for i in I) <= cant_de_camiones for t in T), name="R2b")
 
-        # model.addConstrs((quicksum(Cam[e,i,j,k,t] for j in J for k in K for e in E for i in I)), name="R2c")
-
-        # para cierto t, j, k, e Cam[e,i,j,k,t] = 1 entonces Cam[e,i,j,k,t] = 0 para los otros
-    
-        # for i in T:
-        #     t_var = list(T)
-        #     print(t_var)
-        #     t_var.remove(i)
-        #     print(f"t_var para i = {i}")
-        #     print(t_var)
-        #     model.addConstrs(((1/Omega)*quicksum(Cam[e,i,j,k,i1] for i1 in t_var)<=Cam[e,i,j,k,t] for i in I for j in J for k in K for e in E for t in T), name="R2c")
-
-        # Restricción 4
         # Si no se transporta nada, Cam = 0
-        # Omega * Cam[e,a,i,j,k,t] >= Tr[a,i,j,k,t,e]   \forall i in I, j in J, t in T, k in K, a in A, e in E
         model.addConstrs((Cam[e,i,j,k,t]*(1/Omega) <= quicksum(Tr[a,i,j,k,t,e] for a in A) for i in I for j in J for t in T for k in K for e in E), name="R4")
 
         # Restricción sobre peso máximo de los camiones
         model.addConstrs((quicksum(Tr[a,i,j,k,t,e]*P_ai[(a,i)] for a in A ) <= P_m for i in I for j in J for k in K for t in T for e in E), name="Rpeso")
 
-        # Máximo de capacidad en peso: doble de la demanda
-        # model.addConstrs((quicksum(Al[a,i,k,t]*P_ai[(a,i)] for a in A for i in I) <= 50000 for k in K for t in T), name="Rbodega")
-
-        # Restricción para que si se transporta, Cam = 1
-        # Tr > 0 entonces Cam = 1
+        # Restricción para que si se transportan alimentos, entonces Cam = 1
         model.addConstrs((quicksum(Tr[a,i,j,k,t,e] for a in A)*(1/Omega) <= Cam[e,i,j,k,t] for i in I for e in E for t in T for j in J for k in K), name="R4cond")
 
-        # Restricción 9, inventario inicial
-        # Inicialmente hay 0 y llega lo que se transporta
-        # Después de la extracción hay Al
+        # Restricción de inventario inicial
         model.addConstrs((Al[a,i,k,1] == quicksum(Tr[a,i,j,k,1,e] for j in J for e in E) - ExT[a,i,k,1] for i in I for a in A for k in K), name="R9")
 
         # Inventario del almacén
@@ -200,34 +169,31 @@ for prueba in pruebas:
             if t > 1:
                 print(f"t={t}")
                 model.addConstrs((quicksum(Tr[a,i,j,k,t,e] for j in J for e in E) + Al[a,i,k,t-1] - ExT[a,i,k,t] == Al[a,i,k,t] for a in A for k in K for i in I), name="R5final")
+ 
 
-
-        ######### NUEVA
-        # model.addConstrs((quicksum(Al[a,i,k,tmax] for k in K) >= d_ai[(a,i)] for a in A for i in I),name="RTfinal") 
-
-        # Restricción 7
         # Todo lo que se extrae de todas las bodegas es igual a la demanda
         model.addConstrs((quicksum(ExT[a,i,k,t] for k in K) == d_ai[(a,i)] for a in A for i in I for t in T), name="R7")
 
         #------------------------- Función objetivo -------------------------#
 
+        # Costo por transporte
         obj = quicksum((PT_r[i]+S_r[i]+quicksum(l_rp[(i,p)]*PC_p[p] for p in P) + M_r[i] + CTr_i[i])*Cam[e,i,j,k,t] for e in E for t in T for i in I for j in J for k in K)
 
+        # Costo por almacenamiento
         obj += quicksum(CFB_i[i] + CAl_i[i]*quicksum(Al[a,i,k,t] for a in A) for t in T for i in I for k in K)
 
         #------------------------- Minimización de costos -------------------------#
 
-        # 
-
+        # Minimización
         model.setObjective(obj, GRB.MINIMIZE)
         model.optimize()
+
         status = model.status
         if status == GRB.UNBOUNDED:
             print("The model cannot be solved because it is unbounded")
         elif status == GRB.OPTIMAL:
             print("The optimal objective is %g" %model.ObjVal)
             print("El costo minimizado es de",model.ObjVal,"CLP durante todo el año.")
-
         else:
             print("Optimization was stopped with status %d" %status)
 
@@ -242,6 +208,8 @@ for prueba in pruebas:
             for c in model.getConstrs():
                 if c.IISConstr:
                     print("%s" %c.constrName)
+                
+        # Guardado de valores objetivoo
         valores_objetivo[prueba, p] = model.ObjVal
         print(f"El valor objetivo guardado es {valores_objetivo[prueba,p]}")
         #------------------------- Escritura de datos en resultados -------------------------#
@@ -252,9 +220,6 @@ for prueba in pruebas:
         sol_ExT = ""
 
 
-        camiones_array = np.zeros((np.shape(times)[0],np.shape(fe)[0]))
-
-        # Al[a,i,k,t] ExT[a,i,k,t] Tr[a,i,j,k,t,e] Cam[e,a,i,j,k,t]
         for t in T:
             for i in I:
                 for a in A:
@@ -262,16 +227,9 @@ for prueba in pruebas:
                         for k in K:
                             for e in E:
                                 sol_Tr += f" \n{int(Tr[a,i,j,k,t,e].x)},{a},{i},{j},{k},{t},{e}"
-                                # if a == fa and i == fi:
-                                    # tr_array_d[t-1,k-1,p]=float(quicksum(Tr[a,i,j,k,t,e].x for a in A for i in I for e in E for j in J).getValue())
-                                    # camiones_array[t-1,e-1]=float(quicksum(Tr[a,i,j,k,t,e].x for k in K for a in A for i in I for j in J).getValue())
-
 
                     for k in K:
                             sol_Al += f" \n{int(Al[a,i,k,t].x)},{a},{i},{k},{t}"
-                            # if a == fa and i == fi:
-                                # al_array_d[t-1,k-1,p]=float(quicksum(Al[a,i,k,t].x for a in A for i in I).getValue())    
-                                # platanos_array[t-1,k-1]=float()
                 for k in K:
                     for j in J:
                         for e in E:
@@ -330,6 +288,12 @@ for prueba in pruebas:
             with open(f"resultados/resultados_ExT_costo_almacenar_{str(mult_costo_alm[p])}.csv", "w") as file:
                 file.write("ExT,a,i,k,t")
                 file.write(sol_ExT)            
+
+with open(f"resultados/valores_objetivo.csv", "w") as file:
+    for i in range(3):
+        file.write(f"Prueba {i}")
+        for j in range(3):
+            file.write(str(valores_objetivo[i,j]))
 
 print("Valores objetivo para prueba 0: ", valores_objetivo[0,:])
 print("Valores objetivo para prueba 1: ", valores_objetivo[1,:])
